@@ -1,0 +1,581 @@
+/* =====================================================
+   VARIÁVEIS (tema claro e escuro)
+   ===================================================== */
+:root {
+  --fundo: #f2f2ee;
+  --texto: #111;
+  --texto-suave: #555;
+  --card: #fff;
+  --borda: #d6d6cf;
+  --destaque: #c6ff00;          /* verde-limão */
+  --sobre-destaque: #000;       /* texto em cima do verde-limão */
+  --header-fundo: rgba(242, 242, 238, .92);
+  --erro: #ff4d4d;
+
+  color-scheme: light;
+  box-sizing: border-box;
+
+  /* espaço para o notch / barras do celular */
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Escuro automático (se o usuário não forçou o claro) */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --fundo: #0a0a0a;
+    --texto: #f4f4f0;
+    --texto-suave: #9a9a94;
+    --card: #151515;
+    --borda: #2a2a2a;
+    --header-fundo: rgba(10, 10, 10, .92);
+    color-scheme: dark;
+  }
+}
+
+/* Escuro forçado manualmente */
+:root[data-theme="dark"] {
+  --fundo: #0a0a0a;
+  --texto: #f4f4f0;
+  --texto-suave: #9a9a94;
+  --card: #151515;
+  --borda: #2a2a2a;
+  --header-fundo: rgba(10, 10, 10, .92);
+  color-scheme: dark;
+}
+
+
+/* =====================================================
+   BASE
+   ===================================================== */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  background: var(--fundo);
+  color: var(--texto);
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  line-height: 1.5;
+}
+
+/* faixa que cobre a barra de status do celular */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0 0 auto;
+  height: env(safe-area-inset-top, 0px);
+  background: var(--header-fundo);
+  z-index: 10;
+}
+
+
+/* =====================================================
+   TIPOGRAFIA
+   ===================================================== */
+h1,
+h2,
+h3,
+.logo {
+  font-family: Anton, Impact, "Arial Narrow", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  margin: 0;
+}
+
+
+h2 {
+  font-size: clamp(34px, 7vw, 56px);
+  margin-bottom: 16px;
+}
+
+.note {
+  color: var(--texto-suave);
+  font-size: 13px;
+}
+
+
+/* =====================================================
+   LAYOUT: HEADER, MENU, MAIN, FOOTER
+   ===================================================== */
+header {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 9;
+  background: var(--header-fundo);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid var(--borda);
+}
+
+.bar {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2px 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: nowrap;
+}
+
+.logo {
+  font-size: 26px;
+  text-decoration: none;
+  color: var(--texto);
+}
+
+.logo span {
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  padding: 0 6px;
+  margin-left: 4px;
+}
+
+nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+  margin-left: auto;
+}
+
+nav a {
+  color: var(--texto);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  padding: 8px 10px;
+  border-bottom: 3px solid transparent;
+}
+
+nav a.on {
+  border-color: var(--destaque);
+}
+
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 24px 16px 48px;
+}
+
+footer {
+  border-top: 1px solid var(--borda);
+  padding: 20px 16px;
+  text-align: center;
+  color: var(--texto-suave);
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   COMPONENTES: BOTÃO, TAG, CARD, GRID
+   ===================================================== */
+.btn {
+  display: inline-block;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  border: 2px solid var(--sobre-destaque);
+  padding: 12px 22px;
+  font: 600 14px Inter, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--texto);
+}
+
+.btn.ghost {
+  background: transparent;
+  color: var(--texto);
+  border-color: var(--texto);
+}
+
+.tag {
+  display: inline-block;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 14px;
+}
+
+.card {
+  background: var(--card);
+  border: 1px solid var(--borda);
+  padding: 16px;
+}
+
+.card h3 {
+  font-size: 24px;
+  margin: 8px 0 4px;
+}
+
+.card p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+/* foto (ou inicial) do artista */
+.ph {
+  aspect-ratio: 1;
+  display: grid;
+  place-items: center;
+  background: var(--texto);
+  color: var(--fundo);
+  font: 56px Anton, Impact, sans-serif;
+  overflow: hidden;
+}
+
+.ph img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+
+/* =====================================================
+   FORMULÁRIOS
+   ===================================================== */
+label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  font-weight: 600;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0 12px;
+  background: var(--card);
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  font: 16px Inter, sans-serif;
+}
+
+/* linha de inputs lado a lado (playlist) */
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.row input {
+  flex: 1;
+  min-width: 140px;
+  margin: 0;
+}
+
+/* caixa estreita usada no quiz e no login */
+.box {
+  max-width: 420px;
+}
+
+
+/* =====================================================
+   PÁGINA: INÍCIO
+   ===================================================== */
+.hero {
+  position: relative;           /* as formas se posicionam em relação a ele */
+  padding: 48px 0 32px;
+}
+
+.hero h1 {
+  font-size: clamp(56px, 16vw, 150px);
+  line-height: 1;
+}
+
+.hero h1 em {
+  display: inline-block;
+  line-height: .95;
+  font-style: normal;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  padding: 0 .1em;
+}
+
+.hero p {
+  max-width: 520px;
+  color: var(--texto-suave);
+  font-size: 18px;
+}
+
+/* o texto fica por cima dos símbolos */
+.hero h1,
+.hero p {
+  position: relative;
+  z-index: 1;
+}
+
+/* faixa de nomes rolando */
+.ticker {
+  overflow: hidden;
+  border-block: 2px solid var(--texto);
+  margin: 24px 0;
+  white-space: nowrap;
+}
+
+.ticker div {
+  display: inline-block;
+  padding: 10px 0;
+  animation: rolar 22s linear infinite;
+  font-family: Anton, Impact, sans-serif;
+  font-size: 22px;
+  text-transform: uppercase;
+}
+
+
+/* =====================================================
+   SÍMBOLOS ANIMADOS (lado direito do hero)
+   ===================================================== */
+/* área que ocupa o lado direito do hero */
+.formas {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 45%;
+  height: 100%;
+  pointer-events: none;         /* não atrapalha os cliques */
+}
+
+.f {
+  position: absolute;
+}
+
+.f svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* coroa */
+.f1 {
+  width: 84px;
+  top: 5%;
+  right: 32%;
+  animation: flutuar 5s ease-in-out infinite alternate;
+}
+
+/* moeda de dólar */
+.f2 {
+  width: 64px;
+  top: 6%;
+  right: 6%;
+  animation: virar 3.5s ease-in-out infinite;
+}
+
+/* diamante */
+.f3 {
+  width: 78px;
+  top: 40%;
+  right: 22%;
+  animation: flutuar 4s ease-in-out infinite alternate-reverse;
+}
+
+/* disco de vinil */
+.f4 {
+  width: 92px;
+  bottom: 3%;
+  right: 5%;
+  animation: girar 6s linear infinite;
+}
+
+/* selo 808 */
+.f5 {
+  bottom: 12%;
+  right: 50%;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  font-family: Anton, Impact, sans-serif;
+  font-size: 26px;
+  padding: 2px 12px;
+  animation: pulsar 2.4s ease-in-out infinite alternate;
+}
+
+/* no celular os símbolos ficam discretos para não atrapalhar o texto */
+@media (max-width: 700px) {
+  .formas {
+    opacity: .3;
+  }
+}
+
+
+/* =====================================================
+   PÁGINA: PLAYLIST
+   ===================================================== */
+.trk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--card);
+  border: 1px solid var(--borda);
+  padding: 10px 12px;
+  margin-bottom: 8px;
+}
+
+.trk.on {
+  border-color: var(--destaque);
+  box-shadow: inset 4px 0 0 var(--destaque);
+}
+
+.trk b {
+  display: block;
+}
+
+.trk small {
+  color: var(--texto-suave);
+}
+
+/* botão redondo de tocar/pausar */
+.pl {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--texto);
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* botão de remover (×) */
+.rm {
+  margin-left: auto;
+  background: none;
+  border: 0;
+  color: var(--texto-suave);
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* equalizador animado */
+.eq {
+  display: inline-flex;
+  gap: 2px;
+  align-items: flex-end;
+  height: 16px;
+  margin-left: auto;
+}
+
+.eq i {
+  width: 3px;
+  height: 30%;
+  background: var(--destaque);
+  animation: equalizar .7s ease-in-out infinite alternate;
+}
+
+.eq i:nth-child(2) {
+  animation-delay: .2s;
+}
+
+.eq i:nth-child(3) {
+  animation-delay: .4s;
+}
+
+
+/* =====================================================
+   PÁGINA: QUIZ
+   ===================================================== */
+.opt {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: var(--card);
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  padding: 12px;
+  margin-bottom: 8px;
+  font: 600 15px Inter, sans-serif;
+  cursor: pointer;
+}
+
+/* hover e resposta certa têm o mesmo visual */
+.opt:hover,
+.opt.ok {
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+}
+
+.opt.no {
+  background: var(--erro);
+  color: #000;
+}
+
+/* barra de progresso */
+.prog {
+  height: 6px;
+  background: var(--borda);
+  margin-bottom: 16px;
+}
+
+.prog i {
+  display: block;
+  height: 100%;
+  background: var(--destaque);
+}
+
+
+/* =====================================================
+   ANIMAÇÕES
+   ===================================================== */
+@keyframes rolar {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@keyframes equalizar {
+  to {
+    height: 100%;
+  }
+}
+
+@keyframes flutuar {
+  to {
+    transform: translateY(-22px) rotate(10deg);
+  }
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes virar {
+  50% {
+    transform: scaleX(.05);
+  }
+}
+
+@keyframes pulsar {
+  to {
+    transform: scale(1.4);
+  }
+}
+
+/* respeita quem desativou animações no sistema */
+@media (prefers-reduced-motion: reduce) {
+  .ticker div,
+  .f {
+    animation: none;
+  }
+}
