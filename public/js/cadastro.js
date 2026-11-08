@@ -87,7 +87,7 @@ function cadastrar(e) {
   })
     .then(function (resposta) {
       if (resposta.ok) {
-        msg.innerHTML = "Cadastro realizado! Indo para o login...";
+        msg.innerHTML = "Cadastro realizado com sucesso! Redirecionando para o login...";
         setTimeout(function () { location.hash = "login"; }, 1500);
       } else {
         throw "Erro ao cadastrar";
