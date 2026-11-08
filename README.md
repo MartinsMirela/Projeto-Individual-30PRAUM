@@ -12,7 +12,7 @@
 
 ---
 
-## Funcionalidades
+## Funcionalidades (até o momento)
 
 - **Início e artistas:** apresentação do projeto e dos artistas.
 - **Playlist:** busca prévias de 30 segundos pela iTunes Search API e permite montar a própria playlist.
