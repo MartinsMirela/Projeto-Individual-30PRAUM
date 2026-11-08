@@ -1,5 +1,5 @@
 // =====================================================
-// PÁGINA: LOGIN (simulado, não tem servidor)
+// PÁGINA: LOGIN 
 // =====================================================
 
 // --- ESTADO do login ---
@@ -21,14 +21,13 @@ function paginaLogin() {
     <div class="box">
       <h2>Login</h2>
       <form onsubmit="entrar(event)">
-        <label for="ln">Nome</label>
-        <input id="ln" required autocomplete="name">
-
         <label for="le">E-mail</label>
         <input id="le" type="email" required autocomplete="email">
 
         <label for="lp">Senha</label>
-        <input id="lp" type="password" required minlength="4" autocomplete="off">
+        <input id="lp" type="password" required autocomplete="off">
+
+        <p id="msgLogin"></p>
 
         <button class="btn" type="submit">Entrar</button>
         <a class="btn ghost" href="#cadastro">Cadastre-se</a>
@@ -36,16 +35,35 @@ function paginaLogin() {
     </div>`;
 }
 
-// Usada pelo login E pelo cadastro (o site é simulado)
 function entrar(evento) {
-  evento.preventDefault();   // impede a página de recarregar ao enviar o formulário
-  usuario = {
-    nome: $("#ln").value.trim(),
-    email: $("#le").value.trim()
-  };
-  gravarDados("user", usuario);
-  location.hash = "#login";  // vai para a tela de "já logado"
-  desenhar();
+  evento.preventDefault();
+
+  var email = $("#le").value.trim();
+  var senha = $("#lp").value;
+  var msg = $("#msgLogin");
+
+  fetch("/usuarios/autenticar", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      emailServer: email,
+      senhaServer: senha
+    })
+  })
+    .then(function (resposta) {
+      if (!resposta.ok) throw "Email ou senha inválidos";
+      return resposta.json();
+    })
+    .then(function (dados) {
+      usuario = { id: dados.id, nome: dados.nome, email: dados.email };
+      gravarDados("user", usuario);
+      location.hash = "#login";
+      desenhar();
+    })
+    .catch(function (erro) {
+      console.log("#ERRO: " + erro);
+      msg.innerHTML = "Email ou senha inválidos.";
+    });
 }
 
 function sair() {
