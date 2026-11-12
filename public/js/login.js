@@ -13,6 +13,7 @@ function paginaLogin() {
       <div class="box">
         <h2>Olá, ${escapar(usuario.nome)}</h2>
         <p>Você entrou como <b>${escapar(usuario.email)}</b>.</p>
+        <a class="btn ghost" href="dashboard.html">Ver Dashboard</a>
         <button class="btn" onclick="sair()">Sair</button>
       </div>`;
   }
@@ -57,8 +58,7 @@ function entrar(evento) {
     .then(function (dados) {
       usuario = { id: dados.id, nome: dados.nome, email: dados.email };
       gravarDados("user", usuario);
-      location.hash = "#login";
-      desenhar();
+      window.location = "dashboard.html"; 
     })
     .catch(function (erro) {
       console.log("#ERRO: " + erro);

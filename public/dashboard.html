@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30PRAUM - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="icon" href="img/favicon.png" type="image/png">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" referrerpolicy="no-referrer">
+</head>
+<body>
+
+<div class="layout">
+
+    <aside class="sidebar">
+        <img class="logo" src="img/30logo.png" alt="30PRAUM">
+        <p class="saudacao">Olá, Usuário!</p>
+        <p class="ativo">DASHBOARD</p>
+        <nav>
+            <i class="fa-solid fa-chevron-right"></i> <a href="index.html#quiz">Quiz</a>
+            <i class="fa-solid fa-chevron-right"></i> <a href="index.html#artistas">Artistas</a>
+        </nav>
+        <button class="sair" onclick="voltar()">Voltar</button>
+    </aside>
+
+    <main class="conteudo">
+
+        <header class="cabecalho">
+            <h1 class="titulo-principal">Central de comando da <span>30PRAUM</span></h1>
+            <div class="info-data">
+                <p id="dataHoje">Data:</p>
+                <p>Quiz: Qual artista combina com você?</p>
+            </div>
+        </header>
+
+        <!-- KPIs e gráfico de rosca no topo -->
+        <section class="cards-topo">
+            <div class="card">
+                <h3 class="card-titulo">Artista mais compatível</h3>
+                <div class="card-grafico">
+                    <canvas id="grafArtistas"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h3 class="card-titulo">Total de respostas</h3>
+                <p class="card-texto-destaque" id="kpiTotal">0</p>
+                <span class="card-subtexto" id="kpiArtista">Mais compatível: -</span>
+            </div>
+
+            <div class="card">
+                <h3 class="card-titulo">Plataforma líder</h3>
+                <p class="card-valor" id="kpiPlataforma">-</p>
+                <span class="card-subtexto" id="kpiPlataformaPct">-</span>
+            </div>
+        </section>
+
+        <div class="area-graficos">
+
+            <section class="linha-principal">
+                <div class="card card-linha">
+                    <h3 class="card-titulo">Respostas ao longo dos dias</h3>
+                    <p class="card-subtitulo">Quantidade de pessoas que fizeram o quiz por dia</p>
+
+                    <div class="caixa-grafico-linha">
+                        <canvas id="graficoLinha"></canvas>
+                    </div>
+
+                    <p class="card-nota">Dados ilustrativos; em produção, virão da tabela respostas_quiz.</p>
+                </div>
+            </section>
+
+            <section class="coluna-direita">
+
+                <div class="card card-faturamento">
+                    <h3 class="card-titulo">Faixa etária do público</h3>
+                    <p class="card-subtitulo">Quantidade de respostas por faixa</p>
+
+                    <div class="caixa-grafico-barra">
+                        <canvas id="graficoBarras"></canvas>
+                    </div>
+                </div>
+
+                <div class="card card-alertas">
+                    <div class="titulo-alertas">
+                        <h3 class="card-titulo"><i class="fa-solid fa-bullhorn"></i> Como conheceram a 30PRAUM</h3>
+                    </div>
+
+                    <!-- as linhas abaixo são criadas pelo JavaScript -->
+                    <div id="listaCanais"></div>
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+</div>
+
+<script src="js/auxiliares.js"></script>
+<script>
+    const usuario = lerDados("user");
+
+    if (!usuario) {
+        window.location = "index.html#login";
+    }
+
+    document.querySelector(".saudacao").textContent = "Olá, " + usuario.nome + "!";
+
+    function voltar() {
+        window.location = "index.html#inicio";
+    }
+</script>
+
+<script>
+    // =====================================================
+    // DADOS (por enquanto de mentira)
+    // Depois, troque este objeto por um fetch na API
+    // (veja o comentário "TROCAR POR FETCH" no final)
+    // =====================================================
+    const dados = {
+        artistas:    { "Matuê": 38, "Teto": 29, "Wiu": 19, "Brandão": 14 },
+        plataformas: { "Spotify": 52, "YouTube": 31, "Deezer": 6, "Outro": 11 },
+        canais:      { "TikTok": 34, "Amigos": 30, "Instagram": 22, "Playlist": 14 },
+        faixaEtaria: { "Até 17": 12, "18-24": 46, "25-34": 29, "35+": 13 },
+        porDia:      { "Ter": 8, "Qua": 12, "Qui": 15, "Sex": 22, "Sáb": 18, "Dom": 14, "Seg": 11 }
+    };
+
+    // =====================================================
+    // FUNÇÕES AUXILIARES
+    // =====================================================
+
+    // soma todos os valores de um objeto
+    function somar(obj) {
+        let total = 0;
+        for (let chave in obj) {
+            total += obj[chave];
+        }
+        return total;
+    }
+
+    // devolve o nome (chave) que tem o maior valor
+    function maiorChave(obj) {
+        let maior = -1;
+        let nome = "";
+        for (let chave in obj) {
+            if (obj[chave] > maior) {
+                maior = obj[chave];
+                nome = chave;
+            }
+        }
+        return nome;
+    }
+
+    // =====================================================
+    // PREENCHE OS TEXTOS (data, KPIs e lista de canais)
+    // =====================================================
+    function preencherTextos() {
+        document.getElementById("dataHoje").textContent = "Data: " + new Date().toLocaleDateString("pt-BR");
+
+        const total = somar(dados.artistas);
+        const artistaLider = maiorChave(dados.artistas);
+        const plataformaLider = maiorChave(dados.plataformas);
+        const pctPlataforma = Math.round(dados.plataformas[plataformaLider] / somar(dados.plataformas) * 100);
+
+        document.getElementById("kpiTotal").textContent = total;
+        document.getElementById("kpiArtista").textContent = "Mais compatível: " + artistaLider;
+        document.getElementById("kpiPlataforma").textContent = plataformaLider;
+        document.getElementById("kpiPlataformaPct").textContent = pctPlataforma + "% das respostas";
+
+        // lista de canais (do maior para o menor)
+        const totalCanais = somar(dados.canais);
+        const cores = ["vermelha", "amarela", "azul", "azul"];
+        const ordenados = Object.keys(dados.canais).sort(function (a, b) {
+            return dados.canais[b] - dados.canais[a];
+        });
+
+        let html = "";
+        for (let i = 0; i < ordenados.length; i++) {
+            const nome = ordenados[i];
+            const pct = Math.round(dados.canais[nome] / totalCanais * 100);
+            html += `
+                <div class="alerta">
+                    <span class="bolinha ${cores[i]}"></span>
+                    <div>
+                        <strong>${nome}</strong>
+                        <p>${dados.canais[nome]} respostas</p>
+                    </div>
+                    <small>${pct}%</small>
+                </div>`;
+        }
+        document.getElementById("listaCanais").innerHTML = html;
+    }
+
+    // =====================================================
+    // GRÁFICOS
+    // =====================================================
+    function desenharGraficos() {
+
+        // Rosca: resultado do quiz (qual artista saiu mais)
+        new Chart(document.getElementById("grafArtistas").getContext("2d"), {
+            type: "doughnut",
+            data: {
+                labels: Object.keys(dados.artistas),
+                datasets: [{
+                    data: Object.values(dados.artistas),
+                    backgroundColor: ["#2563eb", "#7c3aed", "#f59e0b", "#10b981"],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: "right",
+                        labels: { boxWidth: 10, font: { family: "Inter" } }
+                    }
+                },
+                cutout: "65%"
+            }
+        });
+
+        // Linha: respostas por dia
+        new Chart(document.getElementById("graficoLinha").getContext("2d"), {
+            type: "line",
+            data: {
+                labels: Object.keys(dados.porDia),
+                datasets: [{
+                    label: "Respostas",
+                    data: Object.values(dados.porDia),
+                    borderColor: "#2563eb",
+                    backgroundColor: "rgba(37, 99, 235, 0.1)",
+                    tension: 0.3,
+                    fill: true,
+                    pointRadius: 3,
+                    pointBackgroundColor: "#2563eb"
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: { precision: 0 },
+                        grid: { color: "#eef2f7" }
+                    },
+                    x: { grid: { display: false } }
+                }
+            }
+        });
+
+        // Barras: faixa etária
+        new Chart(document.getElementById("graficoBarras").getContext("2d"), {
+            type: "bar",
+            data: {
+                labels: Object.keys(dados.faixaEtaria),
+                datasets: [{
+                    data: Object.values(dados.faixaEtaria),
+                    backgroundColor: "#2b78d6",
+                    borderRadius: 0,
+                    barPercentage: 0.4,
+                    categoryPercentage: 0.9
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: { legend: { display: false } },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        border: { display: false },
+                        grid: { color: "#e5e9f0" },
+                        ticks: { precision: 0, color: "#555", font: { family: "Inter", size: 9 } }
+                    },
+                    x: {
+                        border: { display: false },
+                        grid: { display: false },
+                        ticks: { color: "#777", font: { family: "Inter", size: 9 } }
+                    }
+                }
+            }
+        });
+    }
+
+    // =====================================================
+    // INICIA A PÁGINA
+    // =====================================================
+   fetch("/dashboard/resumo")
+  .then(function (resposta) { return resposta.json(); })
+  .then(function (json) {
+    dados.artistas = json.artistas;
+    dados.plataformas = json.plataformas;
+    dados.canais = json.canais;
+    dados.faixaEtaria = json.faixaEtaria;
+    dados.porDia = json.porDia;
+    preencherTextos();
+    desenharGraficos();
+  });
+</script>
+</body>
+</html>

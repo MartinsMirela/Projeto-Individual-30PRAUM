@@ -38,11 +38,38 @@ const ARTISTAS = [
 ];
 
 const PERGUNTAS = [
-  { texto: "Quem fundou a 30PRAUM?",                      opcoes: ["Teto", "Matuê e Clara Mendes", "WIU", "Brandão"],     certa: 1 },
-  { texto: "De qual cidade é o Matuê?",                   opcoes: ["São Paulo", "Rio de Janeiro", "Fortaleza", "Recife"], certa: 2 },
-  { texto: "Em que ano saiu o álbum “Máquina do Tempo”?", opcoes: ["2018", "2019", "2020", "2022"],                       certa: 2 },
-  { texto: "Em que ano saiu o álbum “333”?",              opcoes: ["2022", "2020", "2017", "2024"],                       certa: 0 },
-  { texto: "A coleção ISSO É TRAP é do:",                 opcoes: ["Matuê", "Teto", "WIU", "Brandão"],                    certa: 3 }
+  { texto: "Sexta à noite, você está...", opcoes: [
+    { texto: "Num rolê com os amigos", artista: "Wiu" },
+    { texto: "Em casa, sozinho com fone", artista: "Brandão" },
+    { texto: "Na balada, mandando bem", artista: "Teto" },
+    { texto: "Na rua, sem hora pra voltar", artista: "Matuê" } ] },
+  { texto: "Qual palavra combina mais com você?", opcoes: [
+    { texto: "Leve", artista: "Wiu" },
+    { texto: "Profundo", artista: "Brandão" },
+    { texto: "Confiante", artista: "Teto" },
+    { texto: "Misterioso", artista: "Matuê" } ] },
+  { texto: "O que mais importa numa música?", opcoes: [
+    { texto: "Refrão grudento", artista: "Wiu" },
+    { texto: "Letra", artista: "Brandão" },
+    { texto: "Flow e atitude", artista: "Teto" },
+    { texto: "Batida e clima", artista: "Matuê" } ] },
+  { texto: "Escolha uma vibe:", opcoes: [
+    { texto: "Animada pra cantar junto", artista: "Wiu" },
+    { texto: "Emocional", artista: "Brandão" },
+    { texto: "Pesada e cheia de ego", artista: "Teto" },
+    { texto: "Viajante, noturna", artista: "Matuê" } ] },
+  { texto: "Seu momento ideal de ouvir música:", opcoes: [
+    { texto: "Com os amigos", artista: "Wiu" },
+    { texto: "Antes de dormir", artista: "Brandão" },
+    { texto: "Na academia ou na rua", artista: "Teto" },
+    { texto: "Dirigindo à noite", artista: "Matuê" } ] },
+  // perguntas só de dados (sem artista)
+  { texto: "Onde você mais ouve música?", opcoes: [
+    { texto: "Spotify" }, { texto: "YouTube" }, { texto: "Deezer" }, { texto: "Outro" } ] },
+  { texto: "Como você conheceu a 30PRAUM?", opcoes: [
+    { texto: "Amigos" }, { texto: "TikTok" }, { texto: "Instagram" }, { texto: "Playlist" } ] },
+  { texto: "Qual a sua faixa etária?", opcoes: [
+    { texto: "Até 17" }, { texto: "18-24" }, { texto: "25-34" }, { texto: "35+" } ] }
 ];
 
 const MUSICAS_SUGERIDAS = [

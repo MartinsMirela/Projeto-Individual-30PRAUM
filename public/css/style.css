@@ -579,3 +579,306 @@ input {
     animation: none;
   }
 }
+
+
+/* =====================================================
+   PÁGINA: DASHBOARD
+   ===================================================== */
+.layout {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* ---------- menu lateral ---------- */
+.sidebar {
+  width: 230px;
+  flex: none;
+  height: 100vh;
+  background: var(--card);
+  border-right: 1px solid var(--borda);
+  padding: 24px 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.sidebar .logo {
+  display: block;
+  width: 100%;
+  max-width: 140px;
+  height: auto;
+  margin-bottom: 16px;
+}
+
+.saudacao {
+  margin: 0 0 12px;
+  color: var(--texto-suave);
+  font-size: 14px;
+}
+
+.ativo {
+  display: inline-block;
+  margin: 0 0 16px;
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  text-transform: uppercase;
+}
+
+/* sobrescreve o nav global (que é horizontal) */
+.sidebar nav {
+  display: block;
+  margin: 0;
+}
+
+.sidebar nav i {
+  display: none;
+}
+
+.sidebar nav a {
+  display: block;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.sidebar nav a:hover {
+  border-bottom-color: var(--destaque);
+}
+
+.sair {
+  width: 100%;
+  margin-top: 450px;
+  margin-bottom: 24px;
+  padding: 10px;
+  background: transparent;
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  font: 600 14px Inter, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+
+.sair:hover {
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+}
+
+/* ---------- conteúdo ---------- */
+/* sobrescreve o main global (que tem largura máxima) */
+.conteudo {
+  flex: 1;
+  min-width: 0;
+  max-width: none;
+  margin: 0;
+  padding: 16px 24px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* sobrescreve o header global (que é fixo no topo) */
+.cabecalho {
+  position: static;
+  background: none;
+  backdrop-filter: none;
+  border-bottom: 2px solid var(--texto);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 8px;
+  margin-bottom: 12px;
+  flex: none;
+}
+
+.titulo-principal {
+  font-size: clamp(26px, 4vw, 38px);
+  line-height: 1;
+}
+
+.titulo-principal span {
+  background: var(--destaque);
+  color: var(--sobre-destaque);
+  padding: 0 .15em;
+}
+
+.info-data p {
+  margin: 0;
+  color: var(--texto-suave);
+  font-size: 13px;
+  text-align: right;
+}
+
+/* ---------- cards do topo ---------- */
+.cards-topo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 12px;
+  flex: none;
+}
+
+.card .card-titulo {
+  font-size: 18px;
+  margin: 0 0 8px;
+}
+
+.card .card-subtitulo {
+  font-size: 13px;
+  margin-bottom: 8px;
+}
+
+.card-grafico {
+  position: relative;
+  height: 100px;
+}
+
+.card .card-texto-destaque,
+.card .card-valor {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 40px;
+  line-height: 1.1;
+  color: var(--texto);
+  text-transform: uppercase;
+}
+
+.card-subtexto {
+  display: block;
+  margin-top: 8px;
+  color: var(--texto-suave);
+  font-size: 13px;
+}
+
+/* ---------- área dos gráficos (ocupa o que sobrar da tela) ---------- */
+.area-graficos {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  grid-template-rows: minmax(0, 1fr);
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.linha-principal,
+.coluna-direita {
+  min-height: 0;
+}
+
+.coluna-direita {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.card-linha,
+.card-faturamento,
+.card-alertas {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.card-linha {
+  height: 100%;
+}
+
+.card-faturamento,
+.card-alertas {
+  flex: 1;
+}
+
+.caixa-grafico-linha,
+.caixa-grafico-barra {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+}
+
+.card-nota {
+  display: none;
+}
+
+/* ---------- lista de canais ---------- */
+.titulo-alertas {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.alerta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--borda);
+}
+
+.alerta:last-child {
+  border-bottom: 0;
+}
+
+.alerta strong {
+  font-size: 14px;
+}
+
+.alerta p {
+  display: none;
+}
+
+.alerta small {
+  margin-left: auto;
+  font-weight: 600;
+}
+
+.bolinha {
+  flex: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.bolinha.vermelha { background: var(--erro); }
+.bolinha.amarela  { background: var(--destaque); }
+.bolinha.azul     { background: #3b82f6; }
+
+/* ---------- celular: aqui pode rolar ---------- */
+@media (max-width: 800px) {
+  .layout,
+  .conteudo {
+    height: auto;
+    overflow: visible;
+  }
+
+  .layout {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    height: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--borda);
+  }
+
+  .cards-topo,
+  .area-graficos {
+    grid-template-columns: 1fr;
+  }
+
+  .caixa-grafico-linha,
+  .caixa-grafico-barra {
+    flex: none;
+    height: 220px;
+  }
+
+  .info-data p {
+    text-align: left;
+  }
+}
