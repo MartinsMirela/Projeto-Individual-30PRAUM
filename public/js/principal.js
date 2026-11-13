@@ -6,8 +6,13 @@ function desenharMenu(rotaAtual) {
 
   for (let i = 0; i < ROTAS.length; i++) {
     const rota = ROTAS[i];
-    let classe = "";
-    let texto = rota.nome;
+
+  if (rota.id === "cadastro" && usuario) {
+    continue;
+  }
+
+  let classe = "";
+  let texto = rota.nome;
 
     if (rota.id === rotaAtual) {
       classe = "on";

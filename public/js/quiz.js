@@ -58,16 +58,27 @@ function reiniciarQuiz() {
 
 // ---------- MONTA O HTML DA TELA ----------
 function paginaQuiz() {
-  // se acabou o quiz, mostra o resultado
   if (perguntaAtual >= PERGUNTAS.length) {
+  if (lerDados("user")) {
     return `
       <div class="box">
         <h2>Seu resultado</h2>
         <h1 style="font-size:60px">${escapar(resultadoFinal)}</h1>
         <p>Esse é o artista da 30PRAUM que mais combina com você!</p>
+        <a class="btn" href="dashboard.html">Ver Dashboard</a>
         <button class="btn" onclick="reiniciarQuiz()">Refazer</button>
       </div>`;
   }
+
+  return `
+    <div class="box">
+      <h2>Seu resultado está pronto 🔒</h2>
+      <p>Quer saber quem você seria da 30PRAUM?</p>
+      <p><b>Faça login para ver o seu resultado.</b></p>
+      <a class="btn" href="#login">Fazer login</a>
+      <a class="btn ghost" href="#cadastro">Cadastre-se</a>
+    </div>`;
+}
 
   // senão, mostra a pergunta atual com um botão para cada opção
   const pergunta = PERGUNTAS[perguntaAtual];

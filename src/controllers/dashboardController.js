@@ -14,17 +14,17 @@ function resumo(req, res) {
   Promise.all([
     dashboardModel.contar("artista_resultado"),
     dashboardModel.contar("plataforma"),
-    dashboardModel.contar("canal"),
+    dashboardModel.contar("p5"),
     dashboardModel.contar("faixa_etaria"),
-    dashboardModel.porDia()
+    dashboardModel.contar("p3")
   ])
     .then(function (r) {
       res.json({
         artistas: virarObjeto(r[0]),
         plataformas: virarObjeto(r[1]),
-        canais: virarObjeto(r[2]),
+        momento: virarObjeto(r[2]),
         faixaEtaria: virarObjeto(r[3]),
-        porDia: virarObjeto(r[4])
+        importa: virarObjeto(r[4])
       });
     })
     .catch(function (erro) {

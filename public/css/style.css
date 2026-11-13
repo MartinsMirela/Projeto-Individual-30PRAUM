@@ -844,9 +844,10 @@ input {
   border-radius: 50%;
 }
 
-.bolinha.vermelha { background: var(--erro); }
-.bolinha.amarela  { background: var(--destaque); }
-.bolinha.azul     { background: #3b82f6; }
+.bolinha.vermelha { background: #c6ff00; }
+.bolinha.amarela  { background: #e2ff66; }
+.bolinha.azul     { background: #8aae00; }
+.bolinha.cinza    { background: #9a9a94; }
 
 /* ---------- celular: aqui pode rolar ---------- */
 @media (max-width: 800px) {
@@ -881,4 +882,19 @@ input {
   .info-data p {
     text-align: left;
   }
+}
+
+/* links do menu lateral colados na esquerda */
+.sidebar nav {
+  align-self: stretch;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  text-align: left;
+}
+
+.sidebar nav a {
+  display: block;
+  padding-left: 0;
+  text-align: left;
 }

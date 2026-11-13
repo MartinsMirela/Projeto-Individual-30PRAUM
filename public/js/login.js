@@ -58,7 +58,13 @@ function entrar(evento) {
     .then(function (dados) {
       usuario = { id: dados.id, nome: dados.nome, email: dados.email };
       gravarDados("user", usuario);
-      window.location = "dashboard.html"; 
+      
+      if (perguntaAtual >= PERGUNTAS.length) {
+        location.hash = "#quiz";
+      } else{
+        location.hash = "#inicio";
+      }
+      desenhar();
     })
     .catch(function (erro) {
       console.log("#ERRO: " + erro);
@@ -69,5 +75,5 @@ function entrar(evento) {
 function sair() {
   usuario = null;
   apagarDados("user");
-  desenhar();
+  reiniciarQuiz();
 }
