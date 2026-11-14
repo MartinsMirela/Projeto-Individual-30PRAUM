@@ -1,4 +1,5 @@
 // ---------- VARIÁVEIS (a "memória" do quiz) ----------
+let idRespostaQuiz = null; // id da resposta do quiz no banco (para atualizar depois)
 let perguntaAtual = 0;   // número da pergunta na tela (0 = primeira)
 let pontosArtistas = { "Matuê": 0, "Teto": 0, "Brandão": 0, "Wiu": 0 };
 let respostas = [];      // guarda o texto de cada resposta
@@ -40,11 +41,21 @@ function calcularResultado() {
 
 // ---------- ENVIA PARA A API (salva no banco) ----------
 function enviarResultado() {
+  const logado = lerDados("user");
+
   fetch("/quiz", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ artista: resultadoFinal, respostas: respostas })
-  });
+    body: JSON.stringify({
+      artista: resultadoFinal,
+      respostas: respostas,
+      pontos: pontosArtistas,
+      usuarioId: logado ? logado.id : null
+    })
+  })
+    .then(function (resposta) { return resposta.json(); })
+    .then(function (retorno) { idRespostaQuiz = retorno.id; })
+    .catch(function (erro) { console.log("Erro ao enviar quiz:", erro); });
 }
 
 // ---------- ZERA TUDO PARA JOGAR DE NOVO ----------
@@ -53,6 +64,7 @@ function reiniciarQuiz() {
   pontosArtistas = { "Matuê": 0, "Teto": 0, "Brandão": 0, "Wiu": 0 };
   respostas = [];
   resultadoFinal = "";
+  idRespostaQuiz = null;
   desenhar();
 }
 

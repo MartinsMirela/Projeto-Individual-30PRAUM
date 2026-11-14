@@ -49,9 +49,11 @@ function desenhar() {
     html = paginaLogin();
   } else if (rota === "cadastro") {
     html = paginaCadastro();
-  } else {
+  } else if (rota === "inicio") {
     rota = "inicio";
     html = paginaInicio();
+  } else {
+  html = paginaMemoria();
   }
 
   // descobre o nome da rota para colocar no título da aba

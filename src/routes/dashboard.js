@@ -6,4 +6,8 @@ router.get("/resumo", function (req, res) {
   dashboardController.resumo(req, res);
 });
 
+router.get("/individual/:usuarioId", function (req, res) {
+  dashboardController.individual(req, res);
+});
+
 module.exports = router;

@@ -35,5 +35,6 @@ function paginaInicio() {
       ${cardDestaque("artistas", "Novo",        "Artistas", "Conheça o casting da casa.")}
       ${cardDestaque("playlist", "Monte a sua", "Playlist", "Adicione faixas e organize do seu jeito.")}
       ${cardDestaque("quiz",     "5 perguntas", "Quiz",     "Será que você é fã de verdade?")}
+      ${cardDestaque("memoria",  "Jogo da memória", "Memória", "Se desafie e encontre os elementos que representam a 30PRAUM.")}
     </div>`;
 }

@@ -6,4 +6,8 @@ router.post("/", function (req, res) {
   quizController.salvar(req, res);
 });
 
+router.post("/vincular", function (req, res) {
+  quizController.vincular(req, res);
+});
+
 module.exports = router;

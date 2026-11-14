@@ -35,69 +35,79 @@
                 <div class="info-data">
                     <p id="dataHoje">Data:</p>
                     <p>Quiz: Qual artista combina com você?</p>
+                    <select id="selVisao" onchange="trocarVisao()">
+                        <option value="publica">Visão pública</option>
+                        <option value="individual">Minha visão</option>
+                    </select>
                 </div>
             </header>
 
             <!-- KPIs e gráfico de rosca no topo -->
-            <section class="cards-topo">
-                <div class="card">
-                    <h3 class="card-titulo">Artista mais compatível com o público</h3>
-                    <div class="card-grafico">
-                        <canvas id="grafArtistas"></canvas>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-titulo">Total de respostas</h3>
-                    <p class="card-texto-destaque" id="kpiTotal">0</p>
-                    <span class="card-subtexto" >Interação do público com o quiz</span>
-                </div>
-
-                <div class="card">
-                    <h3 class="card-titulo">Plataforma líder</h3>
-                    <p class="card-valor" id="kpiPlataforma">-</p>
-                    <span class="card-subtexto" id="kpiPlataformaPct">-</span>
-                </div>
-            </section>
-
-            <div class="area-graficos">
-
-                <section class="linha-principal">
-                    <div class="card card-linha">
-                        <h3 class="card-titulo">O que mais importa numa música</h3>
-                        <p class="card-subtitulo" id="subImporta">-</p>
-
-                        <div class="caixa-grafico-linha">
-                            <canvas id="graficoLinha"></canvas>
+            <div id="visaoPublica" class="visao">
+                <section class="cards-topo">
+                    <div class="card">
+                        <h3 class="card-titulo">Artista mais compatível com o público</h3>
+                        <div class="card-grafico">
+                            <canvas id="grafArtistas"></canvas>
                         </div>
+                    </div>
 
-                        <p class="card-nota">Dados ilustrativos; em produção, virão da tabela respostas_quiz.</p>
+                    <div class="card">
+                        <h3 class="card-titulo">Total de respostas</h3>
+                        <p class="card-texto-destaque" id="kpiTotal">0</p>
+                        <span class="card-subtexto">Interação do público com o quiz</span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-titulo">Plataforma líder</h3>
+                        <p class="card-valor" id="kpiPlataforma">-</p>
+                        <span class="card-subtexto" id="kpiPlataformaPct">-</span>
                     </div>
                 </section>
 
-                <section class="coluna-direita">
+                <div class="area-graficos">
 
-                    <div class="card card-faturamento">
-                        <h3 class="card-titulo">Faixa etária do público</h3>
-                        <p class="card-subtitulo">Quantidade de respostas por faixa</p>
+                    <section class="linha-principal">
+                        <div class="card card-linha">
+                            <h3 class="card-titulo">O que mais importa numa música</h3>
+                            <p class="card-subtitulo" id="subImporta">-</p>
 
-                        <div class="caixa-grafico-barra">
-                            <canvas id="graficoBarras"></canvas>
+                            <div class="caixa-grafico-linha">
+                                <canvas id="graficoLinha"></canvas>
+                            </div>
+
+                            <p class="card-nota">Dados ilustrativos; em produção, virão da tabela respostas_quiz.</p>
                         </div>
-                    </div>
+                    </section>
 
-                    <div class="card card-alertas">
-                        <div class="titulo-alertas">
-                            <h3 class="card-titulo"><i class="fa-solid fa-headphones"></i> Momento ideal para ouvir música
-                            </h3>
+                    <section class="coluna-direita">
+
+                        <div class="card card-faturamento">
+                            <h3 class="card-titulo">Faixa etária do público</h3>
+                            <p class="card-subtitulo">Quantidade de respostas por faixa</p>
+
+                            <div class="caixa-grafico-barra">
+                                <canvas id="graficoBarras"></canvas>
+                            </div>
                         </div>
 
-                        <!-- as linhas abaixo são criadas pelo JavaScript -->
-                        <div id="listaCanais"></div>
-                    </div>
+                        <div class="card card-alertas">
+                            <div class="titulo-alertas">
+                                <h3 class="card-titulo"><i class="fa-solid fa-headphones"></i> Momento ideal para ouvir
+                                    música
+                                </h3>
+                            </div>
 
-                </section>
+                            <!-- as linhas abaixo são criadas pelo JavaScript -->
+                            <div id="listaCanais"></div>
+                        </div>
 
+                    </section>
+
+                </div>
+            </div>
+            <div id="visaoIndividual" class="visao oculta">
+                <div id="conteudoIndividual"></div>
             </div>
 
         </main>
@@ -106,12 +116,11 @@
     <script src="js/auxiliares.js"></script>
     <script>
         const usuario = lerDados("user");
-
         if (!usuario) {
             window.location = "index.html#login";
+        } else {
+            document.querySelector(".saudacao").textContent = "Olá, " + usuario.nome + "!";
         }
-
-        document.querySelector(".saudacao").textContent = "Olá, " + usuario.nome + "!";
 
         function voltar() {
             window.location = "index.html#inicio";
@@ -313,6 +322,112 @@
                 preencherTextos();
                 desenharGraficos();
             });
+
+        function trocarVisao() {
+            const visao = document.getElementById("selVisao").value;
+            document.getElementById("visaoPublica").classList.toggle("oculta", visao === "individual");
+            document.getElementById("visaoIndividual").classList.toggle("oculta", visao === "publica");
+
+            if (visao === "individual") {
+                carregarIndividual();
+            }
+        }
+
+        function esc(t) {
+            return String(t).replace(/[&<>"']/g, function (c) {
+                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+            });
+        }
+
+        function carregarIndividual() {
+            const area = document.getElementById("conteudoIndividual");
+            area.innerHTML = '<p class="card-subtexto">Carregando...</p>';
+
+            fetch("/dashboard/individual/" + usuario.id)
+                .then(function (resposta) {
+                    if (resposta.status === 404) throw "semQuiz";
+                    return resposta.json();
+                })
+                .then(function (d) {
+                    area.innerHTML = montarIndividual(d);
+                })
+                .catch(function (erro) {
+                    if (erro === "semQuiz") {
+                        area.innerHTML = `
+                    <div class="card">
+                        <h3 class="card-titulo">Minha visão</h3>
+                        <p>Você ainda não fez o quiz. Faça o quiz para ver a sua visão individual.</p>
+                        <a class="btn" href="index.html#quiz">Fazer o quiz</a>
+                    </div>`;
+                    } else {
+                        area.innerHTML = '<div class="card"><p>Não foi possível carregar a sua visão.</p></div>';
+                    }
+                });
+        }
+
+        function montarIndividual(d) {
+            const nomes = Object.keys(d.afinidade).sort(function (a, b) {
+                return d.afinidade[b] - d.afinidade[a];
+            });
+
+            let barras = "";
+            for (let i = 0; i < nomes.length; i++) {
+                const n = nomes[i];
+                const cor = n === d.artista ? "var(--destaque)" : "var(--texto-suave)";
+                barras += `
+            <div class="ind-linha">
+                <span class="ind-rotulo">${esc(n)}</span>
+                <div class="ind-trilho"><div class="ind-barra" style="width:${d.afinidade[n]}%;background:${cor}"></div></div>
+                <span class="ind-valor">${d.afinidade[n]}%</span>
+            </div>`;
+            }
+
+            const itens = [
+                ["O que mais importa", d.respostas.importa, d.publicoIgual.importa],
+                ["Momento ideal", d.respostas.momento, d.publicoIgual.momento],
+                ["Plataforma", d.respostas.plataforma, d.publicoIgual.plataforma]
+            ];
+
+            let comparacao = "";
+            for (let i = 0; i < itens.length; i++) {
+                comparacao += `
+            <div class="ind-comp">
+                <div class="ind-comp-topo"><span>${itens[i][0]}</span><b>${esc(itens[i][1])}</b></div>
+                <div class="ind-linha">
+                    <div class="ind-trilho"><div class="ind-barra" style="width:${itens[i][2]}%;background:var(--destaque)"></div></div>
+                    <span class="ind-valor">${itens[i][2]}%</span>
+                </div>
+            </div>`;
+            }
+
+            const pessoas = d.mesmoPerfil === 1 ? "1 pessoa" : d.mesmoPerfil + " pessoas";
+
+            return `
+        <div class="ind-grid">
+            <div class="card ind-hero">
+                <h3 class="card-titulo">Seu artista</h3>
+                <p class="ind-nome">${esc(d.artista)}</p>
+                <span class="card-subtexto">${d.afinidade[d.artista]}% de afinidade</span>
+            </div>
+            <div class="card">
+                <h3 class="card-titulo">Afinidade por artista</h3>
+                ${barras}
+            </div>
+            <div class="card">
+                <h3 class="card-titulo">Você e o público</h3>
+                ${comparacao}
+                <span class="card-subtexto">Cada barra mostra quantos do público escolheram a mesma resposta que você.</span>
+            </div>
+            <div class="card">
+                <h3 class="card-titulo">Mesmo perfil que você</h3>
+                <p class="card-texto-destaque">${pessoas}</p>
+            </div>
+            <div class="card">
+                <h3 class="card-titulo">Coincide com a maioria</h3>
+                <p class="card-texto-destaque">${d.coincidencias} de 5</p>
+            </div>
+        </div>`;
+        }
     </script>
 </body>
 

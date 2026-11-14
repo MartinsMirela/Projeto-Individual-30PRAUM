@@ -58,10 +58,19 @@ function entrar(evento) {
     .then(function (dados) {
       usuario = { id: dados.id, nome: dados.nome, email: dados.email };
       gravarDados("user", usuario);
-      
+      // se a pessoa fez o quiz antes de logar, liga o resultado à conta dela
+      if (idRespostaQuiz) {
+        fetch("/quiz/vincular", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ idResposta: idRespostaQuiz, usuarioId: usuario.id })
+        });
+        idRespostaQuiz = null;
+      }
+
       if (perguntaAtual >= PERGUNTAS.length) {
         location.hash = "#quiz";
-      } else{
+      } else {
         location.hash = "#inicio";
       }
       desenhar();

@@ -22,4 +22,26 @@ function porDia() {
   return database.executar(instrucao);
 }
 
-module.exports = { contar, porDia };
+// resultado mais recente de uma pessoa
+function ultimaDoUsuario(usuarioId) {
+  var instrucao = `
+    SELECT artista_resultado, p1, p2, p3, p4, p5, plataforma,
+           pontos_matue, pontos_teto, pontos_brandao, pontos_wiu
+    FROM respostas_quiz
+    WHERE usuario_id = ${usuarioId}
+    ORDER BY id DESC
+    LIMIT 1;
+  `;
+  return database.executar(instrucao);
+}
+
+// respostas de todo mundo, para comparar
+function todasRespostas() {
+  var instrucao = `
+    SELECT artista_resultado, p1, p2, p3, p4, p5, plataforma
+    FROM respostas_quiz;
+  `;
+  return database.executar(instrucao);
+}
+
+module.exports = { contar, porDia, ultimaDoUsuario, todasRespostas };

@@ -6,6 +6,7 @@ const ROTAS = [
   { id: "artistas", nome: "Artistas" },
   { id: "playlist", nome: "Playlist" },
   { id: "quiz",     nome: "Quiz" },
+  { id: "memoria", nome: "Memória" },
   { id: "login",    nome: "Login" },
   { id: "cadastro", nome: "Cadastro" }
 ];

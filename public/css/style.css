@@ -1,5 +1,5 @@
 /* =====================================================
-   VARIÁVEIS (tema claro e escuro)
+   1. VARIÁVEIS (tema claro e escuro)
    ===================================================== */
 :root {
   --fundo: #f2f2ee;
@@ -46,7 +46,7 @@
 
 
 /* =====================================================
-   BASE
+   2. BASE
    ===================================================== */
 * {
   box-sizing: border-box;
@@ -76,7 +76,7 @@ body::before {
 
 
 /* =====================================================
-   TIPOGRAFIA
+   3. TIPOGRAFIA
    ===================================================== */
 h1,
 h2,
@@ -88,7 +88,6 @@ h3,
   letter-spacing: .02em;
   margin: 0;
 }
-
 
 h2 {
   font-size: clamp(34px, 7vw, 56px);
@@ -102,7 +101,7 @@ h2 {
 
 
 /* =====================================================
-   LAYOUT: HEADER, MENU, MAIN, FOOTER
+   4. LAYOUT DO SITE: HEADER, MENU, MAIN, FOOTER
    ===================================================== */
 header {
   position: sticky;
@@ -174,7 +173,7 @@ footer {
 
 
 /* =====================================================
-   COMPONENTES: BOTÃO, TAG, CARD, GRID
+   5. COMPONENTES: BOTÃO, TAG, GRID, CARD, FOTO
    ===================================================== */
 .btn {
   display: inline-block;
@@ -252,7 +251,7 @@ footer {
 
 
 /* =====================================================
-   FORMULÁRIOS
+   6. FORMULÁRIOS
    ===================================================== */
 label {
   font-size: 12px;
@@ -291,7 +290,7 @@ input {
 
 
 /* =====================================================
-   PÁGINA: INÍCIO
+   7. PÁGINA: INÍCIO
    ===================================================== */
 .hero {
   position: relative;           /* as formas se posicionam em relação a ele */
@@ -344,9 +343,8 @@ input {
 
 
 /* =====================================================
-   SÍMBOLOS ANIMADOS (lado direito do hero)
+   8. SÍMBOLOS ANIMADOS (lado direito do hero)
    ===================================================== */
-/* área que ocupa o lado direito do hero */
 .formas {
   position: absolute;
   top: 0;
@@ -419,7 +417,7 @@ input {
 
 
 /* =====================================================
-   PÁGINA: PLAYLIST
+   9. PÁGINA: PLAYLIST
    ===================================================== */
 .trk {
   display: flex;
@@ -492,7 +490,7 @@ input {
 
 
 /* =====================================================
-   PÁGINA: QUIZ
+   10. PÁGINA: QUIZ
    ===================================================== */
 .opt {
   display: block;
@@ -534,7 +532,7 @@ input {
 
 
 /* =====================================================
-   ANIMAÇÕES
+   11. ANIMAÇÕES
    ===================================================== */
 @keyframes rolar {
   to {
@@ -582,7 +580,7 @@ input {
 
 
 /* =====================================================
-   PÁGINA: DASHBOARD
+   12. DASHBOARD: ESTRUTURA GERAL
    ===================================================== */
 .layout {
   display: flex;
@@ -590,7 +588,23 @@ input {
   overflow: hidden;
 }
 
-/* ---------- menu lateral ---------- */
+/* área à direita do menu lateral */
+.conteudo {
+  flex: 1;
+  min-width: 0;
+  max-width: none;              /* sobrescreve o main global */
+  margin: 0;
+  padding: 16px 24px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+
+/* =====================================================
+   13. DASHBOARD: MENU LATERAL
+   ===================================================== */
 .sidebar {
   width: 230px;
   flex: none;
@@ -628,10 +642,14 @@ input {
   text-transform: uppercase;
 }
 
-/* sobrescreve o nav global (que é horizontal) */
+/* links colados na esquerda (sobrescreve o nav global, que é horizontal) */
 .sidebar nav {
   display: block;
+  align-self: stretch;
+  width: 100%;
   margin: 0;
+  padding: 0;
+  text-align: left;
 }
 
 .sidebar nav i {
@@ -641,6 +659,7 @@ input {
 .sidebar nav a {
   display: block;
   padding: 10px 0;
+  text-align: left;
   border-bottom: 1px solid var(--borda);
 }
 
@@ -648,10 +667,10 @@ input {
   border-bottom-color: var(--destaque);
 }
 
+/* botão voltar: vai para o fim do menu */
 .sair {
   width: 100%;
-  margin-top: 450px;
-  margin-bottom: 24px;
+  margin-top: auto;
   padding: 10px;
   background: transparent;
   color: var(--texto);
@@ -667,23 +686,12 @@ input {
   color: var(--sobre-destaque);
 }
 
-/* ---------- conteúdo ---------- */
-/* sobrescreve o main global (que tem largura máxima) */
-.conteudo {
-  flex: 1;
-  min-width: 0;
-  max-width: none;
-  margin: 0;
-  padding: 16px 24px;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
 
-/* sobrescreve o header global (que é fixo no topo) */
+/* =====================================================
+   14. DASHBOARD: CABEÇALHO E SELETOR DE VISÃO
+   ===================================================== */
 .cabecalho {
-  position: static;
+  position: static;             /* sobrescreve o header global (que é fixo) */
   background: none;
   backdrop-filter: none;
   border-bottom: 2px solid var(--texto);
@@ -708,12 +716,58 @@ input {
   padding: 0 .15em;
 }
 
+.info-data {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;   /* data, quiz e botão vão para a direita */
+}
+
 .info-data p {
   margin: 0;
   color: var(--texto-suave);
   font-size: 13px;
   text-align: right;
 }
+
+#selVisao {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: var(--card);
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  font: 600 13px Inter, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  cursor: pointer;
+}
+
+
+/* =====================================================
+   15. DASHBOARD: TROCA ENTRE VISÃO PÚBLICA E INDIVIDUAL
+   ===================================================== */
+.visao {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* a visão individual rola por dentro, sem rolar a página */
+#visaoIndividual {
+  display: block;
+  overflow-y: auto;
+}
+
+/* o seletor com id é mais forte, por isso as duas regras */
+.visao.oculta,
+#visaoIndividual.oculta {
+  display: none;
+}
+
+
+/* =====================================================
+   16. DASHBOARD: VISÃO PÚBLICA (cards, gráficos e lista)
+   ===================================================== */
 
 /* ---------- cards do topo ---------- */
 .cards-topo {
@@ -726,7 +780,7 @@ input {
 
 .card .card-titulo {
   font-size: 18px;
-  margin: 0 0 8px;
+  margin: 0 0 8px; 
 }
 
 .card .card-subtitulo {
@@ -805,7 +859,7 @@ input {
   display: none;
 }
 
-/* ---------- lista de canais ---------- */
+/* ---------- lista "momento ideal" ---------- */
 .titulo-alertas {
   display: flex;
   justify-content: space-between;
@@ -849,7 +903,83 @@ input {
 .bolinha.azul     { background: #8aae00; }
 .bolinha.cinza    { background: #9a9a94; }
 
-/* ---------- celular: aqui pode rolar ---------- */
+
+/* =====================================================
+   17. DASHBOARD: VISÃO INDIVIDUAL
+   ===================================================== */
+.ind-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.ind-hero {
+  grid-column: 1 / -1;
+}
+
+.card .ind-nome {
+  font-family: Anton, Impact, sans-serif;
+  font-size: 56px;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--texto);
+}
+
+.ind-linha {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.ind-rotulo {
+  width: 70px;
+  font-size: 13px;
+  color: var(--texto-suave);
+}
+
+.ind-trilho {
+  flex: 1;
+  height: 10px;
+  background: var(--borda);
+  overflow: hidden;
+}
+
+.ind-barra {
+  height: 100%;
+}
+
+.ind-valor {
+  min-width: 40px;
+  text-align: right;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.ind-comp {
+  margin-bottom: 14px;
+}
+
+.ind-comp .ind-linha {
+  margin-bottom: 0;
+}
+
+.ind-comp-topo {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--texto-suave);
+  margin-bottom: 6px;
+}
+
+.ind-comp-topo b {
+  color: var(--texto);
+}
+
+
+/* =====================================================
+   18. DASHBOARD: CELULAR (aqui a página pode rolar)
+   ===================================================== */
 @media (max-width: 800px) {
   .layout,
   .conteudo {
@@ -868,8 +998,13 @@ input {
     border-bottom: 1px solid var(--borda);
   }
 
+  .sair {
+    margin-top: 24px;
+  }
+
   .cards-topo,
-  .area-graficos {
+  .area-graficos,
+  .ind-grid {
     grid-template-columns: 1fr;
   }
 
@@ -879,22 +1014,65 @@ input {
     height: 220px;
   }
 
+.info-data {
+  align-items: flex-start;
+}
+
   .info-data p {
     text-align: left;
   }
 }
 
-/* links do menu lateral colados na esquerda */
-.sidebar nav {
-  align-self: stretch;
-  width: 100%;
-  margin: 0;
-  padding: 0;
-  text-align: left;
+/* =====================================================
+   PÁGINA: JOGO DA MEMÓRIA (cole no final do style.css)
+   ===================================================== */
+.tabuleiro {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+  gap: 10px;
+  max-width: 560px;
+  margin-bottom: 16px;
 }
 
-.sidebar nav a {
+.carta {
+  aspect-ratio: 1;
+  padding: 14px;
+  display: grid;
+  place-items: center;
+  background: var(--card);
+  color: var(--texto);
+  border: 2px solid var(--texto);
+  font: 40px Anton, Impact, sans-serif;
+  cursor: pointer;
+}
+
+.carta:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 3px 3px 0 var(--texto);
+}
+
+/* carta virada ou já combinada: fundo preto para o verde-limão aparecer */
+.carta.virada,
+.carta.achada {
+  background: #000;
+  cursor: default;
+}
+
+.carta.achada {
+  border-color: var(--destaque);
+  box-shadow: 0 0 0 2px var(--destaque);
+}
+
+.carta svg {
+  width: 100%;
+  height: 100%;
   display: block;
-  padding-left: 0;
-  text-align: left;
+}
+
+/* o selo 808 */
+.carta .selo {
+  background: var(--destaque);
+  color: #000;
+  font-size: 26px;
+  padding: 2px 8px;
 }
