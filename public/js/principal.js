@@ -79,3 +79,15 @@ function desenhar() {
 // =====================================================
 window.addEventListener("hashchange", desenhar);
 desenhar();
+
+// =====================================================
+// INÍCIO DO SITE
+// =====================================================
+
+// se o site foi aberto "do zero" começa no Início
+if (!document.referrer) {
+  location.hash = "#inicio";
+}
+
+window.addEventListener("hashchange", desenhar);
+desenhar();
