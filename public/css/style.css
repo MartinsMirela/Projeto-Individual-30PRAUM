@@ -708,6 +708,7 @@ input {
 .titulo-principal {
   font-size: clamp(26px, 4vw, 38px);
   line-height: 1;
+  align-self: center;
 }
 
 .titulo-principal span {

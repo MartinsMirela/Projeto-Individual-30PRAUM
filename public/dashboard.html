@@ -8,7 +8,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/style.css">
     <link rel="icon" href="img/favicon.png" type="image/png">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
         referrerpolicy="no-referrer">
 </head>
@@ -31,7 +31,7 @@
         <main class="conteudo">
 
             <header class="cabecalho">
-                <h1 class="titulo-principal">A voz do público da <span>30PRAUM</span></h1>
+                <h1 class="titulo-principal" id="tituloPrincipal">A voz do público da <span>30PRAUM</span></h1>
                 <div class="info-data">
                     <p id="dataHoje">Data:</p>
                     <p>Quiz: Qual artista combina com você?</p>
@@ -129,12 +129,12 @@
 
     <script>
         // =====================================================
-        // DADOS (por enquanto de mentira)
-        // Depois, troque este objeto por um fetch na API
-        // (veja o comentário "TROCAR POR FETCH" no final)
+        // DADOS DE EXEMPLO
+        // Ficam na tela se a API não responder. Quando a API
+        // responde (veja o fetch lá embaixo), eles são trocados.
         // =====================================================
         const dados = {
-            artistas: { "Matuê": 38, "Teto": 29, "Wiu": 19, "Brandão": 14 },
+            artistas: { "Matuê": 38, "Teto": 29, "WIU": 19, "Brandão": 14 },
             plataformas: { "Spotify": 52, "YouTube": 31, "Deezer": 6, "Outro": 11 },
             momento: { "Com amigos": 30, "Antes de dormir": 25, "Na academia ou na rua": 22, "Dirigindo à noite": 23 },
             faixaEtaria: { "Até 17": 12, "18-24": 46, "25-34": 29, "35+": 13 },
@@ -310,15 +310,30 @@
 
         // =====================================================
         // INICIA A PÁGINA
+        // Busca os dados na API. Se a API falhar, usa os de exemplo.
         // =====================================================
         fetch("/dashboard/resumo")
-            .then(function (resposta) { return resposta.json(); })
+            .then(function (resposta) {
+                if (!resposta.ok) {
+                    throw "erroApi";                 // API respondeu com erro (404, 500...)
+                }
+                return resposta.json();
+            })
             .then(function (json) {
+                // só troca os dados se a resposta veio completa
+                if (!json.artistas || !json.plataformas || !json.momento || !json.faixaEtaria || !json.importa) {
+                    throw "dadosIncompletos";
+                }
                 dados.artistas = json.artistas;
                 dados.plataformas = json.plataformas;
                 dados.momento = json.momento;
                 dados.faixaEtaria = json.faixaEtaria;
                 dados.importa = json.importa;
+                preencherTextos();
+                desenharGraficos();
+            })
+            .catch(function () {
+                // API fora do ar: a tela continua com os dados de exemplo
                 preencherTextos();
                 desenharGraficos();
             });
@@ -328,8 +343,12 @@
             document.getElementById("visaoPublica").classList.toggle("oculta", visao === "individual");
             document.getElementById("visaoIndividual").classList.toggle("oculta", visao === "publica");
 
+            const titulo = document.getElementById("tituloPrincipal");
             if (visao === "individual") {
+                titulo.innerHTML = 'Minha visão da <span>30PRAUM</span>';
                 carregarIndividual();
+            } else {
+                titulo.innerHTML = 'A voz do público da <span>30PRAUM</span>';
             }
         }
 
@@ -341,6 +360,13 @@
 
         function carregarIndividual() {
             const area = document.getElementById("conteudoIndividual");
+
+            // sem id de usuário, o pedido iria para /individual/undefined
+            if (!usuario.id) {
+                area.innerHTML = '<div class="card"><p>Não encontramos o seu código de usuário. Saia e faça o login de novo.</p></div>';
+                return;
+            }
+
             area.innerHTML = '<p class="card-subtexto">Carregando...</p>';
 
             fetch("/dashboard/individual/" + usuario.id)
