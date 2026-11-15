@@ -1,10 +1,7 @@
-<p align="center">
+<div align="center">
   <img src="public/img/30logo.png" alt="Logo 30PRAUM" width="180">
-</p>
-
-<p align="center"
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green)
-</p>
+  ![Status](https://img.shields.io/badge/status-em%20desenvolvimento-green)
+</div>
 
 <h1 align="center">30PRAUM · Projeto de fã</h1>
 
