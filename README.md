@@ -5,7 +5,7 @@
 <h1 align="center">30PRAUM · Projeto de fã</h1>
 
 <p align="center">
-  Projeto acadêmico da Escola Técnica de São Paulo (SPTECH) · Faculdade de Tecnologia · 2026
+  Projeto acadêmico da Escola Técnica de São Paulo (SPTECH) · Faculdade de Tecnologia · 2026 <br>
   Site de fã com artistas, playlist com prévias de músicas, quiz e sistema de cadastro e login com banco de dados.
 </p>
 
