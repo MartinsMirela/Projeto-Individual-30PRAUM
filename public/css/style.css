@@ -900,7 +900,7 @@ input {
 }
 
 .bolinha.vermelha { background: #c6ff00; }
-.bolinha.amarela  { background: #e2ff66; }
+.bolinha.amarela  { background: green; }
 .bolinha.azul     { background: #8aae00; }
 .bolinha.cinza    { background: #9a9a94; }
 
