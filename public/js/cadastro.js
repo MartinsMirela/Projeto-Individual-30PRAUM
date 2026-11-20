@@ -12,6 +12,10 @@ function paginaCadastro() {
         <label for="lp">Senha</label>
         <input id="lp" type="password" required minlength="4" autocomplete="off" oninput="mostrarForca()">
         <small id="forcaSenha"></small>
+<br>
+        <label for="lc">Confirmar senha</label>
+        <input id="lc" type="password" required autocomplete="off" oninput="mostrarConfirmacao()">
+        <small id="msgConfirma"></small>
 
         <p id="msgCadastro"></p>
 
@@ -27,13 +31,13 @@ function avaliarSenha(senha) {
   if (/[A-Z]/.test(senha)) pontos++;
   if (/[a-z]/.test(senha)) pontos++;
   if (/[0-9]/.test(senha)) pontos++;
-  if (/[^A-Za-z0-9]/.test(senha)) pontos++; 
+  if (/[^A-Za-z0-9]/.test(senha)) pontos++;
 
   var nivel = 'Fraca';
   if (pontos >= 5) nivel = 'Forte';
   else if (pontos >= 3 && senha.length >= 8) nivel = 'Média';
 
-  return  { nivel: nivel, pontos: pontos };
+  return { nivel: nivel, pontos: pontos };
 }
 
 function mostrarForca() {
@@ -41,16 +45,38 @@ function mostrarForca() {
   var aviso = document.getElementById("forcaSenha");
 
   if (senha === "") {
-    aviso.innerHTML = ""; 
-    return; 
+    aviso.innerHTML = "";
+    mostrarConfirmacao();
+    return;
   }
 
   var r = avaliarSenha(senha);
-  var cores = {"Fraca": "red", "Média": "orange", "Forte": "green"};
+  var cores = { "Fraca": "red", "Média": "orange", "Forte": "green" };
 
   aviso.style.color = cores[r.nivel];
-  aviso.innerHTML = "Senha: " + r.nivel + 
-  (r.nivel == "Forte" ? "" : " (mínimo 8 caracteres, letras maiúsculas, minúsculas, números e símbolos)");
+  aviso.innerHTML = "Senha: " + r.nivel +
+    (r.nivel == "Forte" ? "" : " (mínimo 8 caracteres, letras maiúsculas, minúsculas, números e símbolos)");
+
+  mostrarConfirmacao();
+}
+
+function mostrarConfirmacao() {
+  var senha = document.getElementById("lp").value;
+  var confirma = document.getElementById("lc").value;
+  var aviso = document.getElementById("msgConfirma");
+
+  if (confirma === "") {
+    aviso.innerHTML = "";
+    return;
+  }
+
+  if (senha === confirma) {
+    aviso.style.color = "green";
+    aviso.innerHTML = "As senhas coincidem";
+  } else {
+    aviso.style.color = "red";
+    aviso.innerHTML = "As senhas não coincidem";
+  }
 }
 
 function cadastrar(e) {
@@ -59,9 +85,10 @@ function cadastrar(e) {
   var nome = document.getElementById("ln").value;
   var email = document.getElementById("le").value;
   var senha = document.getElementById("lp").value;
+  var confirma = document.getElementById("lc").value;
   var msg = document.getElementById("msgCadastro");
 
-  if (nome == "" || email == "" || senha == "") {
+  if (nome == "" || email == "" || senha == "" || confirma == "") {
     msg.innerHTML = "Todos os campos são obrigatórios.";
     return;
   }
@@ -73,6 +100,11 @@ function cadastrar(e) {
 
   if (avaliarSenha(senha).nivel == "Fraca") {
     msg.innerHTML = "Senha muito fraca. Escolha uma senha mais forte.";
+    return;
+  }
+
+  if (senha !== confirma) {
+    msg.innerHTML = "As senhas não coincidem.";
     return;
   }
 

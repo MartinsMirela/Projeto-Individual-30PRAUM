@@ -9,17 +9,20 @@ function contar(coluna) {
   return database.executar(instrucao);
 }
 
-// artista que mais pontuou em cada resposta
 function contarArtistas() {
   var instrucao = `
-    SELECT a.nome AS nome, COUNT(*) AS total
-    FROM pontuacao p
-    JOIN artista a ON a.idartista = p.artista_id
-    WHERE p.pontos = (
-      SELECT MAX(p2.pontos) FROM pontuacao p2
-      WHERE p2.resposta_id = p.resposta_id
-    )
-    GROUP BY a.nome;
+    SELECT t.nome AS nome, COUNT(*) AS total
+    FROM (
+      SELECT (SELECT a.nome
+              FROM pontuacao p
+              JOIN artista a ON a.idartista = p.artista_id
+              WHERE p.resposta_id = r.idrespostas_quiz
+              ORDER BY p.pontos DESC, a.idartista
+              LIMIT 1) AS nome
+      FROM respostas_quiz r
+    ) t
+    WHERE t.nome IS NOT NULL
+    GROUP BY t.nome;
   `;
   return database.executar(instrucao);
 }
