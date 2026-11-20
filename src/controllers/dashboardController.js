@@ -1,5 +1,8 @@
 var dashboardModel = require("../models/dashboardModel");
 
+// as 8 perguntas do quiz: 5 de personalidade (p1 a p5) e 3 de dados do público
+var COLUNAS_QUIZ = ["p1", "p2", "p3", "p4", "p5", "plataforma", "canal", "faixa_etaria"];
+
 // transforma [{nome: "Teto", total: 5}] em { "Teto": 5 }
 function virarObjeto(linhas) {
   var obj = {};
@@ -12,7 +15,7 @@ function virarObjeto(linhas) {
 function resumo(req, res) {
   // roda as 5 consultas juntas e espera todas terminarem
   Promise.all([
-    dashboardModel.contar("artista_resultado"),
+    dashboardModel.contarArtistas(),
     dashboardModel.contar("plataforma"),
     dashboardModel.contar("p5"),
     dashboardModel.contar("faixa_etaria"),
@@ -83,13 +86,21 @@ function individual(req, res) {
         return Math.round(iguais / todas.length * 100);
       }
 
-      // em quantas das 5 perguntas a resposta dela é a mais comum do público
+      // em quantas das 8 perguntas a resposta dela é a mais comum do público
+      // (respostas vazias, como as de quem fez o quiz antes de uma pergunta existir, não contam)
       var coincidencias = 0;
-      ["p1", "p2", "p3", "p4", "p5"].forEach(function (coluna) {
+      COLUNAS_QUIZ.forEach(function (coluna) {
+        if (eu[coluna] == null) {
+          return;
+        }
+
         var contagem = {};
         todas.forEach(function (t) {
-          contagem[t[coluna]] = (contagem[t[coluna]] || 0) + 1;
+          if (t[coluna] != null) {
+            contagem[t[coluna]] = (contagem[t[coluna]] || 0) + 1;
+          }
         });
+
         var maior = Math.max.apply(null, Object.values(contagem));
         if (contagem[eu[coluna]] === maior) {
           coincidencias++;
@@ -107,7 +118,8 @@ function individual(req, res) {
         respostas: { importa: eu.p3, momento: eu.p5, plataforma: eu.plataforma },
         publicoIgual: { importa: pctIgual("p3"), momento: pctIgual("p5"), plataforma: pctIgual("plataforma") },
         mesmoPerfil: mesmoPerfil,
-        coincidencias: coincidencias
+        coincidencias: coincidencias,
+        totalPerguntas: COLUNAS_QUIZ.length
       });
     })
     .catch(function (erro) {

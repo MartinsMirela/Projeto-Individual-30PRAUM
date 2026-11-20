@@ -1,6 +1,5 @@
 var database = require("../database/config");
 
-// conta quantas respostas existem para cada valor de uma coluna
 function contar(coluna) {
   var instrucao = `
     SELECT ${coluna} AS nome, COUNT(*) AS total
@@ -10,7 +9,21 @@ function contar(coluna) {
   return database.executar(instrucao);
 }
 
-// conta respostas por dia, nos últimos 7 dias
+// artista que mais pontuou em cada resposta
+function contarArtistas() {
+  var instrucao = `
+    SELECT a.nome AS nome, COUNT(*) AS total
+    FROM pontuacao p
+    JOIN artista a ON a.idartista = p.artista_id
+    WHERE p.pontos = (
+      SELECT MAX(p2.pontos) FROM pontuacao p2
+      WHERE p2.resposta_id = p.resposta_id
+    )
+    GROUP BY a.nome;
+  `;
+  return database.executar(instrucao);
+}
+
 function porDia() {
   var instrucao = `
     SELECT DATE_FORMAT(data_hora, '%d/%m') AS nome, COUNT(*) AS total
@@ -22,26 +35,39 @@ function porDia() {
   return database.executar(instrucao);
 }
 
-// resultado mais recente de uma pessoa
 function ultimaDoUsuario(usuarioId) {
   var instrucao = `
-    SELECT artista_resultado, p1, p2, p3, p4, p5, plataforma,
-           pontos_matue, pontos_teto, pontos_brandao, pontos_wiu
-    FROM respostas_quiz
-    WHERE usuario_id = ${usuarioId}
-    ORDER BY id DESC
+    SELECT r.p1, r.p2, r.p3, r.p4, r.p5, r.plataforma, r.canal, r.faixa_etaria,
+      (SELECT a.nome FROM pontuacao p
+        JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz
+        ORDER BY p.pontos DESC, a.idartista LIMIT 1) AS artista_resultado,
+      COALESCE((SELECT p.pontos FROM pontuacao p JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz AND a.nome = 'Matuê'), 0) AS pontos_matue,
+      COALESCE((SELECT p.pontos FROM pontuacao p JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz AND a.nome = 'Teto'), 0) AS pontos_teto,
+      COALESCE((SELECT p.pontos FROM pontuacao p JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz AND a.nome = 'Brandão'), 0) AS pontos_brandao,
+      COALESCE((SELECT p.pontos FROM pontuacao p JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz AND a.nome = 'Wiu'), 0) AS pontos_wiu
+    FROM respostas_quiz r
+    WHERE r.fk_usuario = ${usuarioId}
+    ORDER BY r.idrespostas_quiz DESC
     LIMIT 1;
   `;
   return database.executar(instrucao);
 }
 
-// respostas de todo mundo, para comparar
 function todasRespostas() {
   var instrucao = `
-    SELECT artista_resultado, p1, p2, p3, p4, p5, plataforma
-    FROM respostas_quiz;
+    SELECT r.p1, r.p2, r.p3, r.p4, r.p5, r.plataforma, r.canal, r.faixa_etaria,
+      (SELECT a.nome FROM pontuacao p
+        JOIN artista a ON a.idartista = p.artista_id
+        WHERE p.resposta_id = r.idrespostas_quiz
+        ORDER BY p.pontos DESC, a.idartista LIMIT 1) AS artista_resultado
+    FROM respostas_quiz r;
   `;
   return database.executar(instrucao);
 }
 
-module.exports = { contar, porDia, ultimaDoUsuario, todasRespostas };
+module.exports = { contar, contarArtistas, porDia, ultimaDoUsuario, todasRespostas };
