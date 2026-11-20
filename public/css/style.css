@@ -900,9 +900,9 @@ input {
 }
 
 .bolinha.vermelha { background: #c6ff00; }
-.bolinha.amarela  { background: green; }
-.bolinha.azul     { background: #8aae00; }
-.bolinha.cinza    { background: #9a9a94; }
+.bolinha.amarela  { background: #43a047; }
+.bolinha.azul     { background: #1b5e20; }
+.bolinha.cinza    { background: #ffff; }
 
 
 /* =====================================================
@@ -1121,4 +1121,25 @@ input {
     flex-direction: column;
     text-align: center;
   }
+}
+
+/* =====================================================
+   QUADRADINHOS DO "COINCIDE COM A MAIORIA"
+   (cole na seção 17 do style.css, junto do dashboard individual)
+   ===================================================== */
+.quadrados {
+  display: flex;
+  gap: 6px;
+  margin: 4px 0 12px;
+}
+
+.quad {
+  flex: 1;
+  max-width: 34px;
+  height: 34px;
+  background: var(--borda);
+}
+
+.quad.cheio {
+  background: var(--destaque);
 }
