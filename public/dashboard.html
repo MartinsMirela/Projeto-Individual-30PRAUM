@@ -31,20 +31,24 @@
         <main class="conteudo">
 
             <header class="cabecalho">
-                <h1 class="titulo-principal" id="tituloPrincipal">A voz do público da <span>30PRAUM</span></h1>
+                <h1 class="titulo-principal" id="tituloPrincipal">Minha visão da <span>30PRAUM</span></h1>
+
                 <div class="info-data">
                     <p id="dataHoje">Data:</p>
                     <p>Quiz: Qual artista combina com você?</p>
+
                     <select id="selVisao" onchange="trocarVisao()">
-                        <option value="publica">Visão pública</option>
                         <option value="individual">Minha visão</option>
+                        <option value="publica">Visão pública</option>
                     </select>
                 </div>
             </header>
 
-            <!-- KPIs e gráfico de rosca no topo -->
-            <div id="visaoPublica" class="visao">
+            <!-- VISÃO PÚBLICA -->
+            <div id="visaoPublica" class="visao oculta">
+
                 <section class="cards-topo">
+
                     <div class="card">
                         <h3 class="card-titulo">Artista mais compatível com o público</h3>
                         <div class="card-grafico">
@@ -63,6 +67,7 @@
                         <p class="card-valor" id="kpiPlataforma">-</p>
                         <span class="card-subtexto" id="kpiPlataformaPct">-</span>
                     </div>
+
                 </section>
 
                 <div class="area-graficos">
@@ -93,12 +98,12 @@
 
                         <div class="card card-alertas">
                             <div class="titulo-alertas">
-                                <h3 class="card-titulo"><i class="fa-solid fa-headphones"></i> Momento ideal para ouvir
-                                    música
+                                <h3 class="card-titulo">
+                                    <i class="fa-solid fa-headphones"></i>
+                                    Momento ideal para ouvir música
                                 </h3>
                             </div>
 
-                            <!-- as linhas abaixo são criadas pelo JavaScript -->
                             <div id="listaCanais"></div>
                         </div>
 
@@ -106,7 +111,9 @@
 
                 </div>
             </div>
-            <div id="visaoIndividual" class="visao oculta">
+
+            <!-- VISÃO INDIVIDUAL: EXIBIDA PRIMEIRO -->
+            <div id="visaoIndividual" class="visao">
                 <div id="conteudoIndividual"></div>
             </div>
 
@@ -114,8 +121,10 @@
     </div>
 
     <script src="js/auxiliares.js"></script>
+
     <script>
         const usuario = lerDados("user");
+
         if (!usuario) {
             window.location = "index.html#login";
         } else {
@@ -130,155 +139,207 @@
     <script>
         // =====================================================
         // DADOS DE EXEMPLO
-        // Ficam na tela se a API não responder. Quando a API
-        // responde (veja o fetch lá embaixo), eles são trocados.
         // =====================================================
+
         const dados = {
             artistas: { "Matuê": 38, "Teto": 29, "WIU": 19, "Brandão": 14 },
             plataformas: { "Spotify": 52, "YouTube": 31, "Deezer": 6, "Outro": 11 },
             momento: { "Com amigos": 30, "Antes de dormir": 25, "Na academia ou na rua": 22, "Dirigindo à noite": 23 },
             faixaEtaria: { "Até 17": 12, "18-24": 46, "25-34": 29, "35+": 13 },
-            importa: { "Refrão grudento": 22, "Letra": 31, "Flow e atitude": 27, "Batida e clima": 20 },
+            importa: { "Refrão grudento": 22, "Letra": 31, "Flow e atitude": 27, "Batida e clima": 20 }
         };
 
         // =====================================================
         // FUNÇÕES AUXILIARES
         // =====================================================
 
-        // soma todos os valores de um objeto
         function somar(obj) {
             let total = 0;
+
             for (let chave in obj) {
                 total += obj[chave];
             }
+
             return total;
         }
 
-        // devolve o nome (chave) que tem o maior valor
         function maiorChave(obj) {
             let maior = -1;
             let nome = "";
+
             for (let chave in obj) {
                 if (obj[chave] > maior) {
                     maior = obj[chave];
                     nome = chave;
                 }
             }
+
+            return nome;
+        }
+
+        // padroniza o nome que vem da API (no site o artista é escrito "WIU")
+        function nomeArtista(nome) {
+            if (nome === "Wiu") {
+                return "WIU";
+            }
             return nome;
         }
 
         // =====================================================
-        // PREENCHE OS TEXTOS (data, KPIs e lista de canais)
+        // PREENCHE OS TEXTOS
         // =====================================================
+
         function preencherTextos() {
-            document.getElementById("dataHoje").textContent = "Data: " + new Date().toLocaleDateString("pt-BR");
+            document.getElementById("dataHoje").textContent =
+                "Data: " + new Date().toLocaleDateString("pt-BR");
 
             const total = somar(dados.artistas);
-            const artistaLider = maiorChave(dados.artistas);
             const plataformaLider = maiorChave(dados.plataformas);
-            const pctPlataforma = Math.round(dados.plataformas[plataformaLider] / somar(dados.plataformas) * 100);
+
+            const pctPlataforma = Math.round(
+                dados.plataformas[plataformaLider] /
+                somar(dados.plataformas) * 100
+            );
 
             document.getElementById("kpiTotal").textContent = total;
             document.getElementById("kpiPlataforma").textContent = plataformaLider;
-            document.getElementById("kpiPlataformaPct").textContent = pctPlataforma + "% das respostas";
+            document.getElementById("kpiPlataformaPct").textContent =
+                pctPlataforma + "% das respostas";
 
-            // lista de momentos (do maior para o menor)
             const totalMomento = somar(dados.momento);
             const cores = ["vermelha", "amarela", "azul", "cinza"];
+
             const ordenados = Object.keys(dados.momento).sort(function (a, b) {
                 return dados.momento[b] - dados.momento[a];
             });
 
             let html = "";
+
             for (let i = 0; i < ordenados.length; i++) {
                 const nome = ordenados[i];
-                const pct = Math.round(dados.momento[nome] / totalMomento * 100);
+
+                const pct = Math.round(
+                    dados.momento[nome] / totalMomento * 100
+                );
+
                 html += `
-        <div class="alerta">
-            <span class="bolinha ${cores[i]}"></span>
-            <div>
-                <strong>${nome}</strong>
-                <p>${dados.momento[nome]} respostas</p>
-            </div>
-            <small>${pct}%</small>
-        </div>`;
+                    <div class="alerta">
+                        <span class="bolinha ${cores[i]}"></span>
+                        <div>
+                            <strong>${nome}</strong>
+                            <p>${dados.momento[nome]} respostas</p>
+                        </div>
+                        <small>${pct}%</small>
+                    </div>`;
             }
+
             document.getElementById("listaCanais").innerHTML = html;
 
             const importaLider = maiorChave(dados.importa);
-            const pctImporta = Math.round(dados.importa[importaLider] / somar(dados.importa) * 100);
-            document.getElementById("subImporta").textContent = "Mais votado: " + importaLider + " (" + pctImporta + "%)";
+
+            const pctImporta = Math.round(
+                dados.importa[importaLider] / somar(dados.importa) * 100
+            );
+
+            document.getElementById("subImporta").textContent =
+                "Mais votado: " + importaLider + " (" + pctImporta + "%)";
         }
 
         // =====================================================
         // GRÁFICOS
         // =====================================================
+
         function desenharGraficos() {
 
-            // Rosca: resultado do quiz (qual artista saiu mais)
+            // Gráfico de rosca: artistas
             new Chart(document.getElementById("grafArtistas").getContext("2d"), {
                 type: "doughnut",
+
                 data: {
                     labels: Object.keys(dados.artistas),
+
                     datasets: [{
                         data: Object.values(dados.artistas),
-                        backgroundColor: ["#43a047", "#c6ff00", "#1b5e20", "#8aae00"],
+                        backgroundColor: ["#43a047", "#c6ff00", "#1b5e20", "#ffffff"],
                         borderWidth: 0
                     }]
                 },
+
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
+
                     plugins: {
                         legend: {
                             position: "right",
-                            labels: { boxWidth: 10, font: { family: "Inter" } }
+                            labels: {
+                                boxWidth: 10,
+                                font: { family: "Inter" }
+                            }
                         }
                     },
+
                     cutout: "65%"
                 }
             });
 
-            // Barras: o que mais importa numa música (a mais votada fica destacada)
+            // Gráfico de barras: o que mais importa numa música
             const lider = maiorChave(dados.importa);
+
             const coresImporta = Object.keys(dados.importa).map(function (nome) {
                 return nome === lider ? "#c6ff00" : "#9a9a94";
             });
 
             new Chart(document.getElementById("graficoLinha").getContext("2d"), {
                 type: "bar",
+
                 data: {
                     labels: Object.keys(dados.importa),
+
                     datasets: [{
                         data: Object.values(dados.importa),
                         backgroundColor: coresImporta,
                         borderRadius: 0
                     }]
                 },
+
                 options: {
                     indexAxis: "y",
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+
+                    plugins: {
+                        legend: { display: false }
+                    },
+
                     scales: {
                         x: {
                             beginAtZero: true,
-                            ticks: { precision: 0, color: "#9a9a94" },
+                            ticks: {
+                                precision: 0,
+                                color: "#9a9a94"
+                            },
                             grid: { color: "#2a2a2a" }
                         },
+
                         y: {
                             grid: { display: false },
-                            ticks: { color: "#9a9a94", font: { family: "Inter", size: 13 } }
+                            ticks: {
+                                color: "#9a9a94",
+                                font: { family: "Inter", size: 13 }
+                            }
                         }
                     }
                 }
             });
 
-            // Barras: faixa etária
+            // Gráfico de barras: faixa etária
             new Chart(document.getElementById("graficoBarras").getContext("2d"), {
                 type: "bar",
+
                 data: {
                     labels: Object.keys(dados.faixaEtaria),
+
                     datasets: [{
                         data: Object.values(dados.faixaEtaria),
                         backgroundColor: "#c6ff00",
@@ -287,21 +348,34 @@
                         categoryPercentage: 0.9
                     }]
                 },
+
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+
+                    plugins: {
+                        legend: { display: false }
+                    },
+
                     scales: {
                         y: {
                             beginAtZero: true,
                             border: { display: false },
                             grid: { color: "#e5e9f0" },
-                            ticks: { precision: 0, color: "#555", font: { family: "Inter", size: 9 } }
+                            ticks: {
+                                precision: 0,
+                                color: "#555",
+                                font: { family: "Inter", size: 9 }
+                            }
                         },
+
                         x: {
                             border: { display: false },
                             grid: { display: false },
-                            ticks: { color: "#777", font: { family: "Inter", size: 9 } }
+                            ticks: {
+                                color: "#777",
+                                font: { family: "Inter", size: 9 }
+                            }
                         }
                     }
                 }
@@ -309,87 +383,135 @@
         }
 
         // =====================================================
-        // INICIA A PÁGINA
-        // Busca os dados na API. Se a API falhar, usa os de exemplo.
+        // CARREGAMENTO DA VISÃO PÚBLICA
         // =====================================================
+
         fetch("/dashboard/resumo")
             .then(function (resposta) {
                 if (!resposta.ok) {
-                    throw "erroApi";                 // API respondeu com erro (404, 500...)
+                    throw "erroApi";
                 }
+
                 return resposta.json();
             })
+
             .then(function (json) {
-                // só troca os dados se a resposta veio completa
-                if (!json.artistas || !json.plataformas || !json.momento || !json.faixaEtaria || !json.importa) {
+                if (
+                    !json.artistas ||
+                    !json.plataformas ||
+                    !json.momento ||
+                    !json.faixaEtaria ||
+                    !json.importa
+                ) {
                     throw "dadosIncompletos";
                 }
+
                 dados.artistas = json.artistas;
                 dados.plataformas = json.plataformas;
                 dados.momento = json.momento;
                 dados.faixaEtaria = json.faixaEtaria;
                 dados.importa = json.importa;
+
                 preencherTextos();
                 desenharGraficos();
             })
+
             .catch(function () {
-                // API fora do ar: a tela continua com os dados de exemplo
                 preencherTextos();
                 desenharGraficos();
             });
 
+        // =====================================================
+        // TROCAR VISÃO
+        // =====================================================
+
         function trocarVisao() {
             const visao = document.getElementById("selVisao").value;
-            document.getElementById("visaoPublica").classList.toggle("oculta", visao === "individual");
-            document.getElementById("visaoIndividual").classList.toggle("oculta", visao === "publica");
+
+            document.getElementById("visaoPublica")
+                .classList.toggle("oculta", visao === "individual");
+
+            document.getElementById("visaoIndividual")
+                .classList.toggle("oculta", visao === "publica");
 
             const titulo = document.getElementById("tituloPrincipal");
+
             if (visao === "individual") {
                 titulo.innerHTML = 'Minha visão da <span>30PRAUM</span>';
                 carregarIndividual();
+
             } else {
                 titulo.innerHTML = 'A voz do público da <span>30PRAUM</span>';
             }
         }
 
+        // =====================================================
+        // ESCAPAR CARACTERES ESPECIAIS
+        // =====================================================
+
         function esc(t) {
             return String(t).replace(/[&<>"']/g, function (c) {
-                return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c];
+                return {
+                    "&": "&amp;",
+                    "<": "&lt;",
+                    ">": "&gt;",
+                    '"': "&quot;",
+                    "'": "&#39;"
+                }[c];
             });
         }
+
+        // =====================================================
+        // CARREGAR VISÃO INDIVIDUAL
+        // =====================================================
 
         function carregarIndividual() {
             const area = document.getElementById("conteudoIndividual");
 
-            // sem id de usuário, o pedido iria para /individual/undefined
             if (!usuario.id) {
-                area.innerHTML = '<div class="card"><p>Não encontramos o seu código de usuário. Saia e faça o login de novo.</p></div>';
+                area.innerHTML = `
+                    <div class="card">
+                        <p>Não encontramos o seu código de usuário. Saia e faça o login de novo.</p>
+                    </div>`;
                 return;
             }
 
             area.innerHTML = '<p class="card-subtexto">Carregando...</p>';
 
             fetch("/dashboard/individual/" + usuario.id)
+
                 .then(function (resposta) {
-                    if (resposta.status === 404) throw "semQuiz";
+                    if (resposta.status === 404) {
+                        throw "semQuiz";
+                    }
+
                     return resposta.json();
                 })
+
                 .then(function (d) {
                     area.innerHTML = montarIndividual(d);
                 })
+
                 .catch(function (erro) {
                     if (erro === "semQuiz") {
                         area.innerHTML = `
-                    <div class="card">
-                        <h3 class="card-titulo">Minha visão</h3>
-                        <p>Você ainda não fez o quiz. Faça o quiz para ver a sua visão individual.</p>
-                        <a class="btn" href="index.html#quiz">Fazer o quiz</a>
-                    </div>`;
+                            <div class="card">
+                                <h3 class="card-titulo">Minha visão</h3>
+                                <p>Você ainda não fez o quiz. Faça o quiz para ver a sua visão individual.</p>
+                                <a class="btn" href="index.html#quiz">Fazer o quiz</a>
+                            </div>`;
                     } else {
-                        area.innerHTML = '<div class="card"><p>Não foi possível carregar a sua visão.</p></div>';
+                        area.innerHTML = `
+                            <div class="card">
+                                <p>Não foi possível carregar a sua visão.</p>
+                            </div>`;
                     }
                 });
         }
+
+        // =====================================================
+        // MONTAR VISÃO INDIVIDUAL
+        // =====================================================
 
         function montarIndividual(d) {
             const nomes = Object.keys(d.afinidade).sort(function (a, b) {
@@ -397,64 +519,120 @@
             });
 
             let barras = "";
+
             for (let i = 0; i < nomes.length; i++) {
                 const n = nomes[i];
-                const cor = n === d.artista ? "var(--destaque)" : "var(--texto-suave)";
+
+                const cor = n === d.artista
+                    ? "var(--destaque)"
+                    : "var(--texto-suave)";
+
                 barras += `
-            <div class="ind-linha">
-                <span class="ind-rotulo">${esc(n)}</span>
-                <div class="ind-trilho"><div class="ind-barra" style="width:${d.afinidade[n]}%;background:${cor}"></div></div>
-                <span class="ind-valor">${d.afinidade[n]}%</span>
-            </div>`;
+                    <div class="ind-linha">
+                        <span class="ind-rotulo">${esc(nomeArtista(n))}</span>
+                        <div class="ind-trilho">
+                            <div class="ind-barra" style="width:${d.afinidade[n]}%;background:${cor}"></div>
+                        </div>
+                        <span class="ind-valor">${d.afinidade[n]}%</span>
+                    </div>`;
             }
 
             const itens = [
-                ["O que mais importa", d.respostas.importa, d.publicoIgual.importa],
-                ["Momento ideal", d.respostas.momento, d.publicoIgual.momento],
-                ["Plataforma", d.respostas.plataforma, d.publicoIgual.plataforma]
+                ["O que mais importa numa música?", d.respostas.importa, d.publicoIgual.importa],
+                ["Momento ideal para ouvir música", d.respostas.momento, d.publicoIgual.momento],
+                ["Plataforma para ouvir música", d.respostas.plataforma, d.publicoIgual.plataforma]
             ];
 
             let comparacao = "";
+
             for (let i = 0; i < itens.length; i++) {
                 comparacao += `
-            <div class="ind-comp">
-                <div class="ind-comp-topo"><span>${itens[i][0]}</span><b>${esc(itens[i][1])}</b></div>
-                <div class="ind-linha">
-                    <div class="ind-trilho"><div class="ind-barra" style="width:${itens[i][2]}%;background:var(--destaque)"></div></div>
-                    <span class="ind-valor">${itens[i][2]}%</span>
-                </div>
-            </div>`;
+                    <div class="ind-comp">
+                        <div class="ind-comp-topo">
+                            <span>${itens[i][0]}</span>
+                            <b>${esc(itens[i][1])}</b>
+                        </div>
+
+                        <div class="ind-linha">
+                            <div class="ind-trilho">
+                                <div class="ind-barra" style="width:${itens[i][2]}%;background:var(--destaque)"></div>
+                            </div>
+                            <span class="ind-valor">${itens[i][2]}%</span>
+                        </div>
+                    </div>`;
             }
 
-            const pessoas = d.mesmoPerfil === 1 ? "1 pessoa" : d.mesmoPerfil + " pessoas";
+            const pessoas = d.mesmoPerfil === 1
+                ? "1 pessoa"
+                : d.mesmoPerfil + " pessoas";
+
+            // quadradinhos do "coincide com a maioria"
+            // o total vem da API (d.totalPerguntas); se não vier, usa as 8 perguntas do quiz
+            const totalPerguntas = d.totalPerguntas || 8;
+            let quadrados = "";
+
+            for (let i = 0; i < totalPerguntas; i++) {
+                let classe = "quad";
+
+                if (i < d.coincidencias) {
+                    classe += " cheio";
+                }
+
+                quadrados += '<span class="' + classe + '"></span>';
+            }
+
+            const textoPerguntas = "Do total de " + totalPerguntas + " perguntas do quiz";
 
             return `
-        <div class="ind-grid">
-            <div class="card ind-hero">
-                <h3 class="card-titulo">Seu artista</h3>
-                <p class="ind-nome">${esc(d.artista)}</p>
-                <span class="card-subtexto">${d.afinidade[d.artista]}% de afinidade</span>
-            </div>
-            <div class="card">
-                <h3 class="card-titulo">Afinidade por artista</h3>
-                ${barras}
-            </div>
-            <div class="card">
-                <h3 class="card-titulo">Você e o público</h3>
-                ${comparacao}
-                <span class="card-subtexto">Cada barra mostra quantos do público escolheram a mesma resposta que você.</span>
-            </div>
-            <div class="card">
-                <h3 class="card-titulo">Mesmo perfil que você</h3>
-                <p class="card-texto-destaque">${pessoas}</p>
-            </div>
-            <div class="card">
-                <h3 class="card-titulo">Coincide com a maioria</h3>
-                <p class="card-texto-destaque">${d.coincidencias} de 5</p>
-            </div>
-        </div>`;
+                <div class="ind-grid">
+
+                    <div class="card ind-hero">
+                        <h3 class="card-titulo">Quem você seria:</h3>
+                        <p class="ind-nome">${esc(nomeArtista(d.artista))}</p>
+                        <span class="card-subtexto">${d.afinidade[d.artista]}% de afinidade</span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-titulo">Afinidade por artista</h3>
+                        ${barras}
+                        <span class="card-subtexto">Porcentagem de afinidade com cada artista de acordo com suas respostas</span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-titulo">Você e o público em 3 perguntas</h3>
+                        ${comparacao}
+                        <span class="card-subtexto">
+                            Cada barra mostra quantos por cento do público escolheram a mesma resposta que você
+                        </span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-titulo">Mesmo perfil que você</h3>
+                        <p class="card-texto-destaque" style="color: var(--destaque)">${pessoas}</p>
+                        <span class="card-subtexto">Quantidade de pessoas que tiveram o mesmo resultado que o seu</span>
+                    </div>
+
+                    <div class="card">
+                        <h3 class="card-titulo">Coincide com a maioria</h3>
+                        <div class="quadrados">${quadrados}</div>
+                        <p class="card-texto-destaque">${d.coincidencias} de ${totalPerguntas}</p>
+                        <span class="card-subtexto">${textoPerguntas}</span>
+                    </div>
+
+                </div>`;
         }
+
+        // =====================================================
+        // ABRIR A VISÃO INDIVIDUAL AO ENTRAR NO DASHBOARD
+        // (só se houver usuário; trocarVisao lê o seletor)
+        // =====================================================
+
+        if (usuario) {
+            trocarVisao();
+        }
+
     </script>
+
 </body>
 
 </html>
