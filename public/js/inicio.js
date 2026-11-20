@@ -36,5 +36,20 @@ function paginaInicio() {
       ${cardDestaque("playlist", "Monte a sua", "Playlist", "Adicione faixas e organize do seu jeito.")}
       ${cardDestaque("quiz",     "5 perguntas", "Quiz",     "Será que você é fã de verdade?")}
       ${cardDestaque("memoria",  "Jogo da memória", "Memória", "Se desafie e encontre os elementos que representam a 30PRAUM.")}
-    </div>`;
-}
+    </div>
+<br> <br>
+    <h2>Sobre Mim</h2>
+
+<section class="sobre">
+  <div class="foto-perfil">
+    <img src="img/mirela.jpeg" alt="Minha foto"> <br>
+  </div>
+
+  <div class="texto-sobre">
+    <p>
+      <i>"Eu sou uma grande fã da cena do trap brasileiro, especialmente da gravadora 30PRAUM. Acredito que a música é uma forma poderosa de expressão e conexão, e a 30PRAUM tem desempenhado um papel significativo na promoção do talento nordestino no cenário musical nacional. Através do meu trabalho, busco compartilhar essa paixão com outros fãs e contribuir para a valorização da cultura musical brasileira."</i> <br> <br>
+      Autora: Mirela Martins 
+    </p>
+  </div>
+</section>`
+  }

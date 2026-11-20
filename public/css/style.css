@@ -1077,3 +1077,48 @@ input {
   font-size: 26px;
   padding: 2px 8px;
 }
+
+/*sobre mim*/
+.sobre {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 40px;
+  text-align: left;
+  margin: 30px 0 50px 0;
+}
+
+.foto-perfil {
+  width: 200px;
+  height: 200px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  border: 5px solid #c6ff00;
+  overflow: hidden;
+  box-shadow: 0 0 20px #c6ff00;
+}
+
+.foto-perfil img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 25%;
+}
+
+.texto-sobre {
+  max-width: 450px;
+}
+
+.texto-sobre p {
+  color: white;
+  font-size: 18px;
+  line-height: 1.5;
+}
+
+@media (max-width: 700px) {
+  .sobre {
+    flex-direction: column;
+    text-align: center;
+  }
+}
