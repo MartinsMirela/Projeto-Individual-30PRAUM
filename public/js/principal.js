@@ -1,3 +1,4 @@
+
 // =====================================================
 // MENU
 // =====================================================
@@ -7,17 +8,18 @@ function desenharMenu(rotaAtual) {
   for (let i = 0; i < ROTAS.length; i++) {
     const rota = ROTAS[i];
 
-  if (rota.id === "cadastro" && usuario) {
-    continue;
-  }
+    if (rota.id === "cadastro" && usuario) {
+      continue;
+    }
 
-  let classe = "";
-  let texto = rota.nome;
+    let classe = "";
+    let texto = rota.nome;
 
     if (rota.id === rotaAtual) {
       classe = "on";
     }
-    // Se estiver logado, o botão "Login" mostra o primeiro nome
+
+    // Se estiver logado, o botão Login mostra o primeiro nome
     if (rota.id === "login" && usuario) {
       texto = escapar(usuario.nome.split(" ")[0]);
     }
@@ -30,10 +32,10 @@ function desenharMenu(rotaAtual) {
 
 
 // =====================================================
-// DESENHAR A PÁGINA (roteador)
+// DESENHAR A PÁGINA (ROTEADOR)
 // =====================================================
 function desenhar() {
-  // A rota vem do endereço: site.html#quiz -> "quiz"
+  // Identifica a rota pela URL
   let rota = location.hash.slice(1);
 
   let html = "";
@@ -41,22 +43,29 @@ function desenhar() {
 
   if (rota === "artistas") {
     html = paginaArtistas();
+
   } else if (rota === "playlist") {
     html = paginaPlaylist();
+
   } else if (rota === "quiz") {
     html = paginaQuiz();
+
   } else if (rota === "login") {
     html = paginaLogin();
+
   } else if (rota === "cadastro") {
     html = paginaCadastro();
-  } else if (rota === "inicio") {
+
+  } else if (rota === "inicio" || rota === "") {
     rota = "inicio";
     html = paginaInicio();
+
   } else {
-  html = paginaMemoria();
+    rota = "memoria";
+    html = paginaMemoria();
   }
 
-  // descobre o nome da rota para colocar no título da aba
+  // Descobre o nome da rota para o título da aba
   for (let i = 0; i < ROTAS.length; i++) {
     if (ROTAS[i].id === rota) {
       nomeDaRota = ROTAS[i].nome;
@@ -64,10 +73,12 @@ function desenhar() {
   }
 
   desenharMenu(rota);
+
   $("#app").innerHTML = html;
+
   document.title = "30PRAUM · " + nomeDaRota;
 
-  // Na playlist, carrega as músicas da internet na primeira vez
+  // Carrega as sugestões de músicas na playlist
   if (rota === "playlist" && !sugestoesProntas && !carregando) {
     carregarSugestoes();
   }
@@ -77,17 +88,9 @@ function desenhar() {
 // =====================================================
 // INÍCIO DO SITE
 // =====================================================
+
+// Detecta mudanças nas rotas
 window.addEventListener("hashchange", desenhar);
-desenhar();
 
-// =====================================================
-// INÍCIO DO SITE
-// =====================================================
-
-// se o site foi aberto "do zero" começa no Início
-if (!document.referrer) {
-  location.hash = "#inicio";
-}
-
-window.addEventListener("hashchange", desenhar);
+// Desenha a página inicial ao abrir o site
 desenhar();
